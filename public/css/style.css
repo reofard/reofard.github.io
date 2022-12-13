@@ -59,6 +59,11 @@ a {
 	background-color: transparent;
 }
 
+img {
+	height: 200%;
+	width :auto;
+}
+
 a:hover {
 	text-decoration: underline;
 }
