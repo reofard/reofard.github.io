@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  What is 성홍념?
+title:  성홍념?
 permalink: /about/
 ---
 
