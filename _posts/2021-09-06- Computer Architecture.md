@@ -17,8 +17,6 @@ date: 2021-09-06
 last_modified_at: 2022-11-08
 ---
 
-# 컴퓨터구조
-
 # 컴퓨터 계층구조
 
 - <span style="color:skyblue">계층적 구조</span>를 통해 <span style="color:orange">간접적으로 자원을 제공</span>
@@ -82,7 +80,7 @@ last_modified_at: 2022-11-08
 >![cpu 구동 얘시](/assets/img/cpu%EA%B5%AC%EB%8F%99%20%EC%96%98%EC%8B%9C.png)
 - Fetch이후 PC가 1 증가하여 다음 명령어를 가르킨다.
 
-### Polling과 Interrupt
+### **Polling과 Interrupt, DMA**
 
 - CPU가 일을 하는 중에 외부로 들어온 작업요청을 처리하는 방법
 - 키보드 조작, 네트워크 패킷수신, USB연결 확인 요청, 에러 발생 이벤트 등
@@ -103,7 +101,38 @@ last_modified_at: 2022-11-08
   
   - **Interrupt 종류**
     - 하드웨어 인터럽트
-    - 소프트웨어 인터럽트
+      - CPU 외부의 디스크 컨트롤러나 주변장치
+    - 소프트웨어 인터럽트(Trap/Exception)
+      - CPU 내부에서 자신이 실행한 명령이나 CPU의 명령 실행에 관련된 인터럽트
+      - 처리 불가능한 오류, 이벤트등을 알리기 위해 사용
 
-# 병렬처리
+- **DMA(Direct Memory Access)**
+
+### **병렬처리**
 - 동시에 여러개의 명령어을 처리하여 작업의 능률을 올리는 방식
+- **Pipelining**
+  - 하나의 명령어를 특정 단계로 나누어 서로 다른 명령어의 각 단계를 동시에 실행
+  - 각 단계를 수행하는 하드웨어를 독립적으로 구성
+  - 명령어 실행 단계
+    
+    1. IF(Instruction Fetch)
+        - 다음에 실행할 명령어를 명령어 레지스터에 저장
+    2. ID(Instruction Decode)
+        - 명령어 레지스터의 명령어를 해석
+    3. EX(EXcute)
+        - 해석된 명령어를 실행
+    4. WB(Write Back)
+        - 실행 결과를 메모리에 반영
+  - **PipeLine**
+    - 명령어를 겹쳐서 실행하여 실행시간을 단축
+      >![cpu 구동 얘시](/assets/img/pipelining.png)
+    - **Pipeline Hazard**
+      - 파이프라인에서 발생하는 여러 문제
+      - **Structural hazard**
+        - TBA
+      - **Control hazard**
+        - TBA
+      - **Data hazard**
+        - TBA
+- **슈퍼스칼라**
+- **슈퍼 파이프라인 기법**
