@@ -3,7 +3,7 @@ title:  "Computer Architecture"
 excerpt: "Operating System Summaty"
 
 categories:
-  - Operating System
+  - Operating_System
 
 tags:
   - [Computer Science, Operating System]

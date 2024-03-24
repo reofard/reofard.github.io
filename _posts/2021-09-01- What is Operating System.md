@@ -3,7 +3,7 @@ title:  "What is Operating System"
 excerpt: "Operating System Summaty"
 
 categories:
-  - Operating System
+  - Operating_System
 
 tags:
   - [Computer Science, Operating System]

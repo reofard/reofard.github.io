@@ -3,7 +3,7 @@ title:  "Sampling"
 excerpt: "Operating System Summaty"
 
 categories:
-  - Digital Image Processing
+  - Image_Processing
 
 tags:
   - [Digital Image Processing, Computer Vision]
