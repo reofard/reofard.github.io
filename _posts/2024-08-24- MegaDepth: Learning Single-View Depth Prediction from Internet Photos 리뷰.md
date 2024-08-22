@@ -1,5 +1,5 @@
 ---
-title:  "Mono Depth Estimation : MiDaS 논문 리뷰"
+title:  "MegaDepth: Learning Single-View Depth Prediction from Internet Photos 리뷰"
 excerpt: "Paper Summary"
 
 categories:
@@ -17,7 +17,7 @@ date: 2024-08-24
 last_modified_at: 2024-08-24
 ---
 
-# **MegaDepth: Learning Single-View Depth Prediction from Internet Photos</sup>**
+# **MegaDepth: Learning Single-View Depth Prediction from Internet Photos**
 
 내용
 
