@@ -71,7 +71,7 @@ $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아�
 
 Gradient Matching Term의 목적은 Segmentation과 같이 이미지 상의 단일 표면에 대해 연속적으로, 경계면 사이에서는 뚜렷한 depth의 차이를 생성하기 위함이다. 이러한 목적을 달성하기 위해 저자들은 정규화 손실 항을 정의하였다.
 
-> $\mathcal{L}\_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \sum\_{k=1}^K \sum\_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$
+> $\mathcal{L}_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \sum_{k=1}^K \sum_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$
 
 해당 식에 대해 설명하면 $R_i^k = \hat{\mathbf{d}}_i^k-(\hat{\mathbf{d}}^*)_i^k$ 이미지를 k배 해상도로 샘플링 했을 때의 손실 즉 prediction 값과 Ground Truth의 차이이다.
 해당 항에서는 앞서 설명한 손실값을 각각 x, y방향으로 미분한 그레디언트에 곱하여 합하게 되는데, 그 결과 이미지 상 경계에서는 손실이 크게, 경계가 아닌 표면에서는 손실이 작게 계산되게 된다.
