@@ -53,7 +53,7 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 > $\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i - \hat{\mathbf{d}}^*_i)$
 
-> $\mathcal{L}_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i - \hat{\mathbf{d}}^*_i)$
+> $\mathcal{L}_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)=\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i - \hat{\mathbf{d}}^*_i)$
 
 해당 식에 대해 설명하면 먼저 $\mathbf{d} = \mathbf{d}(\theta_{모델 파라미터})$와 $\hat{\mathbf{d}}^*$은 각각 이동 및 스케일링 연산이 적용된 예측 뎁스맵과 실제 데이터의 Ground Truth, $M$은 Ground Truth가 있는 픽셀의 수, 마지막으로 $\rho$는 특정한 손실함수 타입<sub>(=기존 MSE등의 손실함수)</sub>을 의미한다.
  
