@@ -60,8 +60,8 @@ $
 > $\mathcal{L}_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)=\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i - \hat{\mathbf{d}}^*_i)$
 
 > $
-\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)=
-\frac{1}{2M}\sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)
+\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)
+\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)
 $
 
 > $
