@@ -1,23 +1,23 @@
 ---
-title:  "Mono Depth Estimation : MiDaS 논문 리뷰"
+title:  "논문 이름 논문 리뷰"
 excerpt: "Paper Summary"
 
 categories:
-  - A.I
+  - category
 
 tags:
-  - [Deep Learning, Computer Vision, Paper Review]
+  - [Paper Review]
 
 toc: true
 toc_sticky: true
 layout: post
 use_math: true
  
-date: 2024-08-21
-last_modified_at: 2024-08-21
+date: 20XX-XX-XX
+last_modified_at: 20XX-XX-XX
 ---
 
-# **MegaDepth: Learning Single-View Depth Prediction from Internet Photos</sup>**
+# **논문 이름**
 
 내용
 
