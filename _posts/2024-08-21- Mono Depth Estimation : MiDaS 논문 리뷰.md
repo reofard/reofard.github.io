@@ -56,11 +56,11 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 우선 $s, t$를 각각 이동, 스케일링 연산 예상값이라고 하고 다음과 같이 정의한다.
 
-> $\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$$
+> $\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$
 
 $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아래 식과 같은 최소 자승법이다.
 
-> $(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $$
+> $(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $
 
 그 외에도 여러가지 방법을 통해 $s,t$를 구하여 손실함수를 정의할 수 있다는대, 해당 내용을 나중에 업데이트 하겠다.(수식쓰기 너무 힘듬)
 
