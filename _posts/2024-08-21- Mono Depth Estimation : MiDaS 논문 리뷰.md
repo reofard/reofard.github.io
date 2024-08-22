@@ -47,23 +47,7 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 우선 손실함수는 아래 식과 같이 정의된다.
 
-> $$\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$$
-
-> $
-\bar x = \underset{x}\arg \min \sum_{i=1}^{n} \left( x - x_i \right)
-$
-
-> $$
-\bar x = \underset{x}\arg \min \sum_{i=1}^{n} \left( x - x_i \right)
-$$
-
-> $$
-SE = \sum\_{j=1}^{\infty} \sum\_{k=1}^{\infty} x_{jk}
-$$
-
-> $$
-SE = \sum\_{j=1}^{\infty} \sum\_{k=1}^{\infty} x_{jk}
-$$
+> $\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$
 
 
 해당 식에 대해 설명하면 먼저 $\mathbf{d} = \mathbf{d}(\theta_{모델 파라미터})$와 $\hat{\mathbf{d}}^*$은 각각 이동 및 스케일링 연산이 적용된 예측 뎁스맵과 실제 데이터의 Ground Truth, $M$은 Ground Truth가 있는 픽셀의 수, 마지막으로 $\rho$는 특정한 손실함수 타입<sub>(=기존 MSE등의 손실함수)</sub>을 의미한다.
@@ -72,11 +56,11 @@ $$
 
 우선 $s, t$를 각각 이동, 스케일링 연산 예상값이라고 하고 다음과 같이 정의한다.
 
-> $$\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$$
+> $\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$$
 
 $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아래 식과 같은 최소 자승법이다.
 
-> $$(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $$
+> $(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $$
 
 그 외에도 여러가지 방법을 통해 $s,t$를 구하여 손실함수를 정의할 수 있다는대, 해당 내용을 나중에 업데이트 하겠다.(수식쓰기 너무 힘듬)
 
@@ -87,7 +71,7 @@ $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아�
 
 Gradient Matching Term의 목적은 Segmentation과 같이 이미지 상의 단일 표면에 대해 연속적으로, 경계면 사이에서는 뚜렷한 depth의 차이를 생성하기 위함이다. 이러한 목적을 달성하기 위해 저자들은 정규화 손실 항을 정의하였다.
 
-> $$\mathcal{L}\_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \sum\_{k=1}^K \sum\_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$$
+> $\mathcal{L}\_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \sum\_{k=1}^K \sum\_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$
 
 해당 식에 대해 설명하면 $R_i^k = \hat{\mathbf{d}}_i^k-(\hat{\mathbf{d}}^*)_i^k$ 이미지를 k배 해상도로 샘플링 했을 때의 손실 즉 prediction 값과 Ground Truth의 차이이다.
 해당 항에서는 앞서 설명한 손실값을 각각 x, y방향으로 미분한 그레디언트에 곱하여 합하게 되는데, 그 결과 이미지 상 경계에서는 손실이 크게, 경계가 아닌 표면에서는 손실이 작게 계산되게 된다.
