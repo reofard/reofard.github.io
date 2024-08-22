@@ -49,7 +49,14 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 > $$\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$$
 
-$$\mathcal{L}\_{MSE} = \frac{1}{N} \sum\_{i=1}^N (y_i - \hat{y_ i})^2$$
+> $$
+\bar x = \underset{x}\arg \min \sum_{i=1}^{n} \left( x - x_i \right)
+$$
+
+> $$
+SE = \sum\_{j=1}^{\infty} \sum\_{k=1}^{\infty} x_{jk}
+$$
+
 
 해당 식에 대해 설명하면 먼저 $\mathbf{d} = \mathbf{d}(\theta_{모델 파라미터})$와 $\hat{\mathbf{d}}^*$은 각각 이동 및 스케일링 연산이 적용된 예측 뎁스맵과 실제 데이터의 Ground Truth, $M$은 Ground Truth가 있는 픽셀의 수, 마지막으로 $\rho$는 특정한 손실함수 타입<sub>(=기존 MSE등의 손실함수)</sub>을 의미한다.
  
@@ -57,11 +64,11 @@ $$\mathcal{L}\_{MSE} = \frac{1}{N} \sum\_{i=1}^N (y_i - \hat{y_ i})^2$$
 
 우선 $s, t$를 각각 이동, 스케일링 연산 예상값이라고 하고 다음과 같이 정의한다.
 
-> $\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$
+> $$\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$$
 
 $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아래 식과 같은 최소 자승법이다.
 
-> $(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $
+> $$(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $$
 
 그 외에도 여러가지 방법을 통해 $s,t$를 구하여 손실함수를 정의할 수 있다는대, 해당 내용을 나중에 업데이트 하겠다.(수식쓰기 너무 힘듬)
 
