@@ -60,6 +60,11 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 \frac{1}{2M}\sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)
 $
 
+> $
+\mathcal{L}_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) 
+\frac{1}{2M}\sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)
+$
+
 해당 식에 대해 설명하면 먼저 $\mathbf{d} = \mathbf{d}(\theta_{모델 파라미터})$와 $\hat{\mathbf{d}}^*$은 각각 이동 및 스케일링 연산이 적용된 예측 뎁스맵과 실제 데이터의 Ground Truth, $M$은 Ground Truth가 있는 픽셀의 수, 마지막으로 $\rho$는 특정한 손실함수 타입<sub>(=기존 MSE등의 손실함수)</sub>을 의미한다.
  
 즉 위의 손실함수는 예측값과 Ground Truth에 변형을 가해 정렬할 뿐 일반적인 딥러닝에서 사용하는 손실함수와 동일하다. 그렇다면 정렬을 위한 이동 및 스케일링 연산 예상값은 어떻게 할까?
