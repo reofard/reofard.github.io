@@ -49,8 +49,16 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 > $$\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*) = \frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$$
 
+> $
+\bar x = \underset{x}\arg \min \sum_{i=1}^{n} \left( x - x_i \right)
+$
+
 > $$
 \bar x = \underset{x}\arg \min \sum_{i=1}^{n} \left( x - x_i \right)
+$$
+
+> $$
+SE = \sum\_{j=1}^{\infty} \sum\_{k=1}^{\infty} x_{jk}
 $$
 
 > $$
