@@ -1,5 +1,5 @@
 ---
-title:  "Midas(Mixing Datasets for Zero-shot Cross-dataset Transfer) 논문 리뷰"
+title:  "Mono Depth Estimation : MiDaS 논문 리뷰"
 excerpt: "Paper Summary"
 
 categories:
