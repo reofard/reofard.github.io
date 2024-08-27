@@ -48,13 +48,14 @@ last_modified_at: 2024-08-24
 
 그 이후 각각의 장소마다 분류된 이미지를 이용해서 [COLMAP](https://colmap.github.io)<sup>[SFM](https://openaccess.thecvf.com/content_cvpr_2016/papers/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.pdf)과 [MVS](https://demuc.de/papers/schoenberger2016mvs.pdf)을 포함하는 파이프 라인</sup>을 이용해서 3D Model을 재구성 하게 된다. 이때 추가적으로 각 이미지별 Depth Map, 카메라 내,외부 파라미터등의 정보들 역시 같이 계산된다고 한다.
 
-![복원된 3D 모델]()
-![복원된 Depth Map]()
-![카메라 내 외부 파라미터]()
+![복원된 3D 모델](/assets/img/colmap_reconstruction.png)
+
+![복원된 Depth Map](/assets/img/colmap_origin.png)
+![복원된 Depth Map](/assets/img/colmap_depth.png)
 
 <br>
 
-### **Depth map refinement**
+## **2. Data Preprocessing**
 
 COLMAP에서 생성된 Depth Map정보는 아래와 같은 문제를 가진다고 한다. 이러한 문제들은 Stereo Matching의 한계점 때문에 발생하게 되는데 이러한 에러에 대해 자세히 설명하면 다음과 같다.
 
@@ -62,25 +63,35 @@ COLMAP에서 생성된 Depth Map정보는 아래와 같은 문제를 가진다�
 2. 노이즈에 의한 불연속적인 깊이정보
 3. 전경과의 깊이값이 후경의 깊이값에 의해 침식당하여 발생한 에러
 
-해당 논문에서는 이러한 문제들을 해결하기 위해 Depth Map 후처리를 통해 이러한 에러들이 학습에 영향을 주지 못하게 막는다고 한다. 첫번째로 COLMAP에서 특정 픽셀의 깊이값을 계산할 때 전경의 깊이값이 소실되지 않도록 깊이값이 더 낮은(낮을수록 카메라에 가까움)값을 선택하고, 중위값 필터를 통해 outliner를 제거하는 방식을 제안한다. 이 경우 아래 사진과 같이 전경(조각상)의 깊이값이 후경(벽)에 의해 침식되는 에러를 막을 수 있다고 한다.
-
-![전경 후경 비교사진]()
+해당 논문에서는 앞서 인터넷 이미지를 기반으로한 데이터를 몇가지 전처리 과정을 통해 가공하여 이러한 에러를 해결하였다고 한다. 하나씩 알아보자.
 
 <br>
+
+### **Photo calibration and reconstruction**
+
+첫번째로 제안하는 방법은 Depth Map에 smoothing을 적용하는것이다. 영상기반 3D Reconstruction을 진행하면 특징점이 완벽한 3D 모델이 생성되지 않고, 전경이 후경에 의해 침식되는 경우가 많다. 이를 해결하기 위해 해당 논문에서는 3D 모델을 기반으로 Depth Map 정보를 계산할 때 근처 픽셀 값을 참고하여 깊이값이 더 낮은(낮을수록 카메라에 가까움)값을 선택하고, 중위값 필터를 통해 outliner를 제거하는 방식으로 Depth Map을 구하게 된다. 이 경우 아래 사진과 같이 전경(조각상)의 깊이값이 후경(벽)에 의해 침식되는 에러를 막을 수 있다고 한다.
+
+![전경 후경 비교사진](/assets/img/depth_bleeding.PNG)
+
+<br>
+
+### **Depth map refinement**
 
 두번째로 제안하는 방법은 Semantic Segmentation을 이용해 Depth Map 정보를 보강하는것이다. 해당 논문은 인터넷에 올라온 무작위 데이터를 기반으로 하기 때문에 SfM, MVS를 수행하는데 큰 문제점이 존재한다. 바로 동일한 장소를 서로 다른 시간에 찍힌 이미지를 기반으로 하기때문에 특정 사진에만 존재하는 객체(사람, 자동차)나 동일한 객체의 시간에 따른 변화(신호등, 하늘, 나무)가 존재하여 이미지들이 100% 매칭이 될 수 없다는 것이다.
 
-![일시적인 사람 사진]()
+이러한 에러를 해결하기 위해 딥러닝에 의한 Semantic Segmentation를 사용했다고 한다. 이 segmentatioin 정보를 기반으로 Depth Map에 전처리 과정을 거치게 되는데, 우선 Semantic Segmentation을 통해 일시적인 오브젝트인지 여부를 판단하게 된다. 구해진 영역안에서 3D 모델로 부터 계산된 Depth값이 비연속적이면 일시적인 물체라고 판단하고, 아래 그림과 같이 해당 segmentation 영역에서의 깊이값을 depth map에서 제거하게 된다.
+
+![일시적인 사람 사진](/assets/img/temp_object.PNG)
 
 <br>
 
-MegaDepth에서는 이러한 에러를 해결하기 위해 딥러닝에 의한 Semantic Segmentation을 통해 문제를 해결했다고 한다. 이 전처리 과정은 3가지 기법을 사용하는데, 첫번째 기법은 일시적인 물체로 인한 에러 제거이다. Semantic Segmentation을 통해 구해진 영역안에서 3D 모델로 부터 계산된 Depth값이 비연속적이면 일시적인 물체에 의한 에러라고 판단하고, 해당 깊이값을 depth map에서 제거하게 된다.
+그 다음은 앞서서 판단한 정보에 따라 2가지로 학습데이터를 분류하는것이다. 앞서 설명한 일시적인 물체가 이미지상에 너무 많을 경우 자연스럽게 Depth Map의 신뢰도 역시 하락하게 되는데, 이러한 정보들은 Geometry정보를 가진 Euclidian Depth Map 데이터로 사용하지 않고, 전경, 후경의 순서로 이루어진 Ordinal Depth Map으로 사용하여 학습에 이용하게 된다. 이때 아래 사진과 같이 하나의 이미지에서 각 세그멘테이션 영역별 Depth 값이 비 연속적일수록 전경일 가능성이 높다고 한다.
 
-두번째 방법은 Depth Map의 신뢰도에 따라 2가지로 학습데이터를 분류하는것이다. 앞서 설명한 일시적인 물체가 이미지상에 너무 많을 경우 자연스럽게 Depth Map의 신뢰도 역시 하락하게 되는데, 이러한 정보들은 Geometry정보를 가진 Euclidian Depth Map 데이터로 사용하지 않고, 전경, 후경의 순서로 이루어진 Ordinal Depth Map으로 사용하여 학습에 이용하게 된다. 이때 아래 사진과 같이 하나의 이미지에서 각 세그멘테이션 영역별 Depth 값이 비 연속적일수록 전경일 가능성이 높다고 한다.
+아래 그림의 경우 파란부분이 전경(Depth값이 비연속적), 빨간부분이 후경(Depth값이 연속적)으로 구분되어 Ordinal Depth Map을 이루게 된다.
 
-![전경 후경 판별]()
+![전경 후경 판별](/assets/img/전경후경.PNG)
 
-첫번째 기법은 일시적인 물체에대한 부정확한 깊이값 픽셀을 없애버리기 때문에 학습할 때 일시적인 물체에 대한 깊이값 추론 성능이 낮아질 수 있는데, 두번째 기법을 통해 생성된 Ordinal Depth Map 데이터의 경우 이러한 학습데이터의 부재를 완화시켜 줄 수 있다고 한다.
+이러한 기법은 일시적인 물체에대한 부정확한 깊이값 픽셀을 없애버리기 때문에 학습할 때 일시적인 오브젝트에 대한 깊이값 추론 성능이 낮아질 수 있는데, Ordinal Depth Map 데이터를 통해 일시적인 오브젝트의 Depth 추론에 필요한 학습데이터의 부재를 완화시켜 줄 수 있다고 한다.
 
 <br>
 
