@@ -25,7 +25,7 @@ last_modified_at: 2024-08-21
 
 ## **간단한 설명**
 
-Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측정하는 분야이다. 깊이를 추정하는데는 여러가지 방법이 있지만, 이번 논문에서는 r learning-based techniques 즉 신경망 모델을 이용해 구하는 방법에 대해 다루는데, 다른 분야들도 딥러닝 모델을 이용한다면 동일하긴 하지만 이 방법에는 몇가지 단점이 있다.
+Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측정하는 분야이다. 깊이를 추정하는데는 여러가지 방법이 있지만, 이번 논문에서는 Learning-based techniques 즉 신경망 모델을 이용해 구하는 방법에 대해 다루는데, 다른 분야들도 딥러닝 모델을 이용한다면 동일하긴 하지만 이 방법에는 몇가지 단점이 있다.
 
 학습 모델을 법용적으로 사용하기 위해서는 일반화 성능을 높여야 하는데, 이를 위해서는 다양한 환경(영상을 찍은 환경, 카메라 등)에서 수집된 양질의 데이터가 많이 필요하다. 이러한 데이터셋들은 Razer Scanner, Lidar, SFM, Stereo Camera등을 통해서 만들어지는데, 해당 논문에서는 이런 모든 종류의 데이터를 사용하여 학습을 시켜 충분한 양의 데이터를 획득했다고 한다. 하지만 이 방식에는 문제가 있는데, 데이터마다 축적, bias(카메라와 거리측정 센서 사이의 차이 등), 카메라의 종류등이 모두 달라 한 모델에서 같이 학습시키기 어렵게 되는 것이다. 저자들은 해당 문제점을 해결하기 위해 새로운 손실함수를 제안했다.
 
@@ -47,9 +47,7 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 우선 손실함수는 아래 식과 같이 정의된다.
 
-> $\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)$
-> $=$
-> $\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$
+> $$\mathcal{L}\_{ssi}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)=\frac{1}{2M} \sum_{i=1}^M \rho(\hat{\mathbf{d}}_i-\hat{\mathbf{d}}^*_i)$$
 
 
 해당 식에 대해 설명하면 먼저 $\mathbf{d} = \mathbf{d}(\theta_{모델 파라미터})$와 $\hat{\mathbf{d}}^*$은 각각 이동 및 스케일링 연산이 적용된 예측 뎁스맵과 실제 데이터의 Ground Truth, $M$은 Ground Truth가 있는 픽셀의 수, 마지막으로 $\rho$는 특정한 손실함수 타입<sub>(=기존 MSE등의 손실함수)</sub>을 의미한다.
@@ -58,11 +56,11 @@ Mono Depth Estimation이란 단안카메라 영상/이미지에서 깊이를 측
 
 우선 $s, t$를 각각 이동, 스케일링 연산 예상값이라고 하고 다음과 같이 정의한다.
 
-> $\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$
+> $$\hat{\mathbf{d}} = s\mathbf{d} + t, \hat{\mathbf{d}}^* = \mathbf{d}^*$$
 
 $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아래 식과 같은 최소 자승법이다.
 
-> $(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $
+> $$(s, t) = argmin_{s, t} \sum_{i=1}^M(\hat{\mathbf{d}} - \hat{\mathbf{d}}^*)^2 $$
 
 그 외에도 여러가지 방법을 통해 $s,t$를 구하여 손실함수를 정의할 수 있다는대, 해당 내용을 나중에 업데이트 하겠다.(수식쓰기 너무 힘듬)
 
@@ -73,9 +71,7 @@ $s$와 $t$ 를 구하기 위한 가장 먼저 생각 할 수 있는 식은 아�
 
 Gradient Matching Term의 목적은 Segmentation과 같이 이미지 상의 단일 표면에 대해 연속적으로, 경계면 사이에서는 뚜렷한 depth의 차이를 생성하기 위함이다. 이러한 목적을 달성하기 위해 저자들은 정규화 손실 항을 정의하였다.
 
-> $\mathcal{L}_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)$
-> $=$
-> $\sum_{k=1}^K \sum_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$
+> $$\mathcal{L}_{reg}(\hat{\mathbf{d}},\hat{\mathbf{d}}^*)=\sum_{k=1}^K \sum_{i=1}^M \left(\left\vert \nabla_x R_i^k \right\vert + \left\vert \nabla_y R_i^k \right\vert\right)$$
 
 해당 식에 대해 설명하면 $R_i^k = \hat{\mathbf{d}}_i^k-(\hat{\mathbf{d}}^*)_i^k$ 이미지를 k배 해상도로 샘플링 했을 때의 손실 즉 prediction 값과 Ground Truth의 차이이다.
 해당 항에서는 앞서 설명한 손실값을 각각 x, y방향으로 미분한 그레디언트에 곱하여 합하게 되는데, 그 결과 이미지 상 경계에서는 손실이 크게, 경계가 아닌 표면에서는 손실이 작게 계산되게 된다.
