@@ -1,5 +1,5 @@
 ---
-title:  "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis 리뷰"
+title:  "NeRF : 특정 복셀의 색 맞추기"
 excerpt: "Paper Summary"
 
 categories:

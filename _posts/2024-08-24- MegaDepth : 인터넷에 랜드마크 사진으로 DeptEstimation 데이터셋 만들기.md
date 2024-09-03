@@ -1,5 +1,5 @@
 ---
-title:  "MegaDepth: Learning Single-View Depth Prediction from Internet Photos 리뷰"
+title:  "MegaDepth : 인터넷에 랜드마크 사진으로 DeptEstimation 데이터셋 만들기"
 excerpt: "Paper Summary"
 
 categories:

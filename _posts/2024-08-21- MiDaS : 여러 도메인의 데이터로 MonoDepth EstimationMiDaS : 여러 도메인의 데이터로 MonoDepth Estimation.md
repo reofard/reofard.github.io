@@ -1,5 +1,5 @@
 ---
-title:  "Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer 리뷰"
+title:  "MiDaS : 여러 도메인의 데이터로 MonoDepth Estimation"
 excerpt: "Paper Summary"
 
 categories:
@@ -17,7 +17,7 @@ date: 2024-08-21
 last_modified_at: 2024-08-21
 ---
 
-# **Midas<sup>Mixing Datasets for Zero-shot Cross-dataset Transfer</sup>**
+# **Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer**
 
 파이 토치에 보면 인텔에서 개발한 MiDaS라는 단일 이미지에서 상대 깊이 추정을 위한 모델이 있다. [Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer](https://arxiv.org/abs/1907.01341v3)라는 논문을 기반으로 만들어진 모델인데, 3D 영화를 포함한 다양한 소스의 데이터에 대해 사용 가능한 손실함수를 설계하여 zero shot learning을 하여 일반화 성능을 높였다고 한다. 
 
