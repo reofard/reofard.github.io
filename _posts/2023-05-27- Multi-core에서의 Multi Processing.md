@@ -63,13 +63,13 @@ MESI protocol에서 각각의 cache block(참고 논문에선 cache line이라�
 
 MESI protocol에서 각각의 cache block은 위 사진과 같은 state를 가지게 된다. 상태전이 이벤트에 대해 간략히 설명하면 다음과 같다.
 
-**Processor Requests Event**
+### **Processor Requests Event**
 
 - **PrRd**: 해당 cache block이 core에 의해 read연산이 진행되는 이벤트
 
 - **PrWr**: 해당 cache block이 core에 의해 write연산이 진행되는 이벤트
 
-**Bus side Event**
+### **Bus side Event**
 
 - **BusRd**: 다른 core에서 특정 캐시블럭에 대한 읽기 요청이 발생한 경우
 
@@ -91,4 +91,73 @@ MESI protocol에서 각각의 cache block은 위 사진과 같은 state를 가�
 
 그렇다면 이러한 일관성 문제는 모두 해결 된걸까? 위에서의 Cache Coherency Protocol은 여러개의 cache 저장소의 일관성을 유지하기 위한 프로토콜이었다. 하지만 메인메모리(RAM)는 하나기 때문에 항상 메모리가 최신이라는 보장인 일관성(Coherency)에 대해 신경 쓸 필요가 없다. 여기서 또 다른 개념 하나가 더 등장하는데, 바로 Consistency이다. 이 단어도 마찬가지로 일관성이라는 뜻을 가지지만 위에서 다룬 의미와는 조금 다르다.
 
-Consistency는 쉽게 말해 서로 다른 데이터 사이의 순서를 지키는 것이다. 이를 알기위해 먼저 Program Order와 Execution Order가 달라질 수 있음을 알아야 한다. Program Order는 작성된 프로그램에서의 실행순서, Execution Order 실제로 프로세서가 메모리에 접근하는 순서를 가르킨다. 근데 순서대로 실행하는데 바뀌는 이유는 바로 앞에서 설명한 cache-coherency protocol 때문이다.
+Consistency는 서로 다른 데이터 사이의 순서를 지키는 것이다. 쉽게 말해 Program Order와 Execution Order의 순서가 일치함을 의미한다. Program Order는 작성된 프로그램에서의 실행순서, Execution Order 실제로 프로세서가 메모리에 접근하는 순서를 가르킨다. 
+
+하지만 Consistency는 바로 앞에서 설명한 cache-coherency protocol에 의해 깨질 수 있다(물론 pipelining을 위한 최적화에 의해서도 깨질 수 있음). 일단 이번 포스트에서는 cache-coherency protocol에 관련해서 Consistency에 문제가 생기는 원인 만 알아보려고 한다.
+
+![cache write stall example](/assets/img/cachestall.png)
+
+위 사진은 CPU 0(이하 0번 core)이 특정 cache블럭에 대한 write연산을 하기위해 CPU 1((이하 1번 core))의 cache block을 무효화 하는 과정을 나타낸 그림이다. 이와 같이 하나의 코어가 write연산을 하기위해서는 다른 코어에 의해 허락을 받아야 하는 불필요한 지연 시간이 생기게 된다.
+
+<br>
+
+### **Store buffer**
+
+현대 컴퓨터 구조에서는 이러한 불필요한 지연을 해결하기 위해 아래 그림과 같은 **Storer buffer**를 도입하였다. Store buffer는 현재 아래 그림과 같이 core와 cache사이에 존재하는 버퍼이다. 이 버퍼는 write연산 결과를 잠깐 저장했다가 core대신 Acknowledgement 메세지를 받아 캐시에 적어주는 역할을 한다. 그럼 core는 굳이 Acknowledgement를 기다리지 않고 다른 작업을 하면 된다.
+
+![store buffer](/assets/img/storebuffer.png)
+
+<br>
+
+### **self-consistency violation**
+
+하지만 store buffer의 도입에 따라 새로운 문제가 발생한다. 첫번째 문제는 **self-consistency violation**이다. 먼저 아래 사진과 같은 상태의 시스템을 생각해보자.
+
+![self-consistency violation](/assets/img/selfviolation.png)
+
+이 상황에서 0번째 코어가 아래와 같은 코드를 수행한다면 정상적으로 b가 2가 되지 않을 수 있다. Cache 0에서 a=1을 업데이트하기 위해서는 1번 core의 허락을 맡아야 하는데, 허락을 맡기위해 a=1결과가 store buffer에 체류하는 동안 두번째 줄을 실행하면 a가 아직 0인 상태로 계산되기 때문이다.
+
+```c
+a = 1;
+b = a + 1;
+assert(b==2);
+```
+
+![self cosistency violation timeline](/assets/img/selfviolationtimeline.png)
+
+위 사진은 self-consistency violation이 일어나는 타임라인에 대해 그린 그림이다. 앞 명령어의 stall 기간 동안 뒤의 명령어가 앞의 명령의의 결과를 사용하는 경우에 주로 self-consistency violation이 발생할 수 있다.
+
+물론 위 문제의 해결책은 존재한다. 각각의 core가 자신의 store buffer에서 load 중인 cache block을 조회 할 수 있게 하면 된다. 이를 **Caches With Store Forwarding**이라고 한다. 아래 사진은 Caches With Store Forwarding의 간략한 구조이다.
+
+![Caches With Store Forwarding](/assets/img/CachesWithStoreForwarding.png)
+
+<br>
+
+### **violation of global memory ordering**
+
+두번째 문제는 **violation of global memory ordering**이다. 아래와 같이 이전의 사진과 새로운 코드와 같은 상황이라고 가정해보자.
+
+![self-consistency violation](/assets/img/selfviolation.png)
+
+```c
+void foo(void) // execute by Core 0
+{
+    a=1;
+    b=1;
+}
+void bar(void) // execute by Core 1
+{
+    while (b == 0) continue;
+    assert(a == 1);
+}
+```
+
+이 경우 아래 그림의 타임라인과 같이 실행 순서가 바뀌는 문제가 발생 할 수 있다. 이는 앞서 말했던 **Consistency** 문제로 서로 다른 core사이에서 특정 변수들의 업데이트 순서를 관찰 할 때, 실제 코드의 실행순서와 다르게 관찰 될 수 있게 된다. 이러한 문제를 해결하기 위해서 프로그래머는 **Memory Barriers**라는 기능을 사용할 수 있다.
+
+![violation of global memory ordering timeline](/assets/img/.png)
+
+<br>
+
+### **Memory Barriers**
+
+그럼 Memory Barriers는 뭐고, 어떻게 쓰는걸까?
