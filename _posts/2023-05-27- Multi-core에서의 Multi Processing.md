@@ -59,7 +59,7 @@ MESI protocol에서 각각의 cache block(참고 논문에선 cache line이라�
 
 - **invalid** : 해당 cache block이 최신사본이 아닌경우이다. 다른 core의 cache에서 해당 cache block이 수정되는 경우 해당 상태로 진입하고, 해당 cache block이 없는 상태이다.
 
-![MESI state machine](/assets/img/MESISTATE.PNG)
+![MESI state machine](/assets/img/MESISTATE.png)
 
 MESI protocol에서 각각의 cache block은 위 사진과 같은 state를 가지게 된다. 상태전이 이벤트에 대해 간략히 설명하면 다음과 같다.
 
@@ -127,17 +127,17 @@ assert(b==2);
 
 위 사진은 self-consistency violation이 일어나는 타임라인에 대해 그린 그림이다. 앞 명령어의 stall 기간 동안 뒤의 명령어가 앞의 명령의의 결과를 사용하는 경우에 주로 self-consistency violation이 발생할 수 있다.
 
-물론 위 문제의 해결책은 존재한다. 각각의 core가 자신의 store buffer에서 load 중인 cache block을 조회 할 수 있게 하면 된다. 이를 **Caches With Store Forwarding**이라고 한다. 아래 사진은 Caches With Store Forwarding의 간략한 구조이다.
+물론 위 문제의 해결책은 존재한다. 각각의 core가 자신의 store buffer에서 load 중인 cache block을 조회 할 수 있게 하면 된다. 이를 **Caches With Store Forwarding**이라고 한다. 아래 사진은 Caches With Store Forwarding의 간략한 구조와 적용되었을때 위 문제사항에서 실행 플로우이다.
 
-![Caches With Store Forwarding](/assets/img/CachesWithStoreForwarding.png)
+![Timeline Caches With Store Forwarding](/assets/img/store_buffer_timeline.png)
 
 <br>
 
 ### **violation of global memory ordering**
 
-두번째 문제는 **violation of global memory ordering**이다. 아래와 같이 이전의 사진과 새로운 코드와 같은 상황이라고 가정해보자.
+두번째 문제는 **violation of global memory ordering**이다. 아래 사진과 같이 캐시에 데이터가 저장되어있고, 아래의 코드를 각각의 프로세스가 실행하는 상황이라고 가정해보자.
 
-![self-consistency violation](/assets/img/selfviolation.png)
+![violation of global memory ordering](/assets/img/globalviolation.png)
 
 ```c
 void foo(void) // execute by Core 0
