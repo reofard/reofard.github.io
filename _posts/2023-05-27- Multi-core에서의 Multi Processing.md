@@ -31,7 +31,7 @@ last_modified_at: 2023-05-27
 
 그럼 두 프로세서가 cache에 각각 캐시에 저장된 값을 읽고 같은 clock에 mutex값을 바꿔버리면 원자명령이 의미 없는게 아닐까? 란 생각이 들었다. 여러 cache가 동기화되지 않으면 해당 데이터가 접근할 때 최신이라는 보장인 Coherency가 없기 때문이다. 하지만 찾아보니 데이터에 접근할 때 해당 데이터가 최신임을 보장해주는 Cache-coherency Protocol이 존재했다. 이 프로토콜은 cache를 실시간으로 하드웨어에 의해 동기화하여 동시에 값을 수정하는것을 물리적으로 불가능 하게 만든다. 그럼 어떤방식으로 하드웨어에서 Coherency를 유지해주는지 알아보자.
 
-### **Bus snooping**
+## **Bus snooping**
 
 말그대로 Bus를 통해 오가는 데이터를 관찰하는 방법이다. Bus를 관찰하고 있다가 특정 주소에 대한 작업이 발생하면 캐시에 맵핑된 주소값에 대한 동작이 감지되면 해당 프로세서의 캐시에 업데이트가 아니더라도 같이 업데이트를 해주는 방식이다. 이 Bus snooping기법에는 두가지 방식이 있다.
 
@@ -47,7 +47,7 @@ last_modified_at: 2023-05-27
 
 <br>
 
-### **MESI protocol**
+## **MESI protocol**
 
 MESI protocol에서 각각의 cache block(참고 논문에선 cache line이라고 함) “modified”, “exclusive”, “shared”, 그리고 “invalid” 총 4가지 state로 구분된다. 물론 더 많은 상태가 있지만 이것만 봐도 된다고 한다.
 
@@ -101,7 +101,7 @@ Consistency는 서로 다른 데이터 사이의 순서를 지키는 것이다. 
 
 <br>
 
-### **Store buffer**
+## **Store buffer**
 
 현대 컴퓨터 구조에서는 이러한 불필요한 지연을 해결하기 위해 아래 그림과 같은 **Storer buffer**를 도입하였다. Store buffer는 현재 아래 그림과 같이 core와 cache사이에 존재하는 버퍼이다. 이 버퍼는 write연산 결과를 잠깐 저장했다가 core대신 Acknowledgement 메세지를 받아 캐시에 적어주는 역할을 한다. 그럼 core는 굳이 Acknowledgement를 기다리지 않고 다른 작업을 하면 된다.
 
@@ -137,7 +137,7 @@ assert(b==2);
 
 두번째 문제는 **violation of global memory ordering**이다. 아래 사진과 같이 캐시에 데이터가 저장되어있고, 아래의 코드를 각각의 프로세스가 실행하는 상황이라고 가정해보자.
 
-![violation of global memory ordering](/assets/img/globalviolation.png)
+![violation of global memory ordering](/assets/img/global_order_violation_example.png)
 
 ```c
 void foo(void) // execute by Core 0
@@ -152,12 +152,17 @@ void bar(void) // execute by Core 1
 }
 ```
 
-이 경우 아래 그림의 타임라인과 같이 실행 순서가 바뀌는 문제가 발생 할 수 있다. 이는 앞서 말했던 **Consistency** 문제로 서로 다른 core사이에서 특정 변수들의 업데이트 순서를 관찰 할 때, 실제 코드의 실행순서와 다르게 관찰 될 수 있게 된다. 이러한 문제를 해결하기 위해서 프로그래머는 **Memory Barriers**라는 기능을 사용할 수 있다.
+이 경우 아래 그림의 타임라인과 같이 실행 순서가 바뀌는 문제가 발생 할 수 있다. 이는 앞서 말했던 **Consistency** 문제로 서로 다른 core사이에서 특정 변수들의 업데이트 순서를 관찰 할 때, 실제 코드의 실행순서와 다르게 관찰 될 수 있게 된다. 이는 core 0에서 ```a=1, b=1``` **명령어를 순차적으로 수행**되었지만, 다른 캐시의 core에 있는  변수 ```a```의 cache의 경우 원 소유주인 core 1의 허가를 받으며 느리게 수행되어 **결과가 다른 core에 전파되는 순서가 바뀌게 된 것**이다.
 
-![violation of global memory ordering timeline](/assets/img/.png)
+![violation of global memory ordering timeline](/assets/img/global_order_violation_seq.png)
+
+
+물론 [Intel 공식 도큐먼트](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)를 보면 위와같은 상황에서 명령어 재배치는 이루어지지 않는다고 한다. 하지만 ARM등의 다른 cpu 들은 여전히 발생할 수 있다고 한다.
+
+이러한 문제를 해결하기 위해서 프로그래머는 **Memory Barriers**라는 기능을 사용할 수 있다. Memory Barrier란 뭔지, 어떤 원리로 동작하는건지는  다음에 정리해보겠다.
 
 <br>
 
-### **Memory Barriers**
+# **마치며**
 
-그럼 Memory Barriers는 뭐고, 어떻게 쓰는걸까?
+일하다가 든 궁금증 하나로 이렇게 많은 내용이 나오면서 이렇게 길어질줄은 몰랐다. 다음번 글에서는 메모리베리어란 무엇인지에 대해 앞서 소개한 [논문](http://www.puppetmastertrading.com/images/hwViewForSwHackers.pdf) 내용을 참고하여 마저 작성하고 난 뒤, 원자명령에 대해 더 자세히 알아보려고 한다.
