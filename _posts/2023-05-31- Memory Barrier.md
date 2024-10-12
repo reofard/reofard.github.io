@@ -49,13 +49,20 @@ void bar(void) // execute by Core 1
 }
 ```
 
-```smp_mp()```의 적용으로 인해 아래와 같이 실행되게 되고, execution order와 perceived order를 일치 시킬 수 있게 된다.
+```smp_mp()```의 적용으로 인해 아래와 같이 실행하여, execution order와 perceived order를 일치 시킬 수 있게 된다.
+
+![뮤텍스 문제](/assets/img/memory_barrier_ex.png)
+
+이는 Memory Barrier를 통해 store buffer가 cache에 실제로 적용된 값을 수정하는 순서를 강제하는 역할을 해주기 때문이다. 즉 Memory Barrier는 **execution order를 통해 store buffer가 cache에 값을 업데이트 하는 순서를 강제**하여 **perceived order를 동기화** 시켜주는 역할을 해준다.
 
 <br>
 
 ## **Invalidate Queues**
 
-하지만 store buffer는 CPU가 데이터를 메모리에 기록하기 전에 잠시 저장해 두는 작은 임시 저장소이다. 그렇기 때문에 캐시 미스나 캐시 무효화(invalidation) 작업에 의해 메모리에 기록하는 과정이 지연되며 buffer가 가득 차버리는 문제가 발생할 수 있다. 이러한 문제를 해결하기 위해 **Invalidate queue**라는것을 도입해서 문제를 해결했는데, 어떻게 수행되는건지 정리해보려 한다.
+하지만 store buffer는 CPU가 데이터를 메모리에 기록하기 전에 잠시 저장해 두는 작은 임시 저장소이다. 그렇기 때문에 캐시 미스나 캐시 무효화(invalidation) 작업에 의해 메모리에 기록하는 과정이 지연되며 buffer가 가득 차버리는 문제가 발생할 수 있다. 이는 Memory Barrier가 store buffer의 일부 값을 비우지 못하게 blocking하면서 앞서 말한 문제 사항이 더 자주 발생 할 수 있게 된다. 이러한 문제를 해결하기 위해 **Invalidate queue**라는것을 도입해서 문제를 해결했는데, 어떻게 수행되는건지 정리해보려 한다.
+
+Invalidate Queue는 
+
 
 
 # **돌고돌아 Mutex**
@@ -64,4 +71,4 @@ void bar(void) // execute by Core 1
 
 ![뮤텍스 문제]()
 
-mutex는 read(플래그 확인) write(플래스 설정)가 한번에 이루어지는 원자명령이기 때문에 위 그림과 같이 뮤텍스가 걸릴 때 bus snooping을 통해 한쪽 명령 수행이 무력화 된다.
+mutex는 read(플래그 확인) write(플래그 설정)가 한번에 이루어지는 원자명령이기 때문에 위 그림과 같이 뮤텍스가 걸릴 때 bus snooping을 통해 한쪽 명령 수행이 무력화 된다.

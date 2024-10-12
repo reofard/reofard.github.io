@@ -165,4 +165,4 @@ void bar(void) // execute by Core 1
 
 # **마치며**
 
-일하다가 든 궁금증 하나로 이렇게 많은 내용이 나오면서 이렇게 길어질줄은 몰랐다. 다음번 글에서는 메모리베리어란 무엇인지에 대해 앞서 소개한 [논문](http://www.puppetmastertrading.com/images/hwViewForSwHackers.pdf) 내용을 참고하여 마저 작성하고 난 뒤, 원자명령에 대해 더 자세히 알아보려고 한다.
+일하다가 든 궁금증 하나로 이렇게 많은 내용이 나오면서 이렇게 길어질줄은 몰랐다. 다음번 글에서는 메모리베리어란 무엇인지에 대해 앞서 소개한 [논문](http://www.puppetmastertrading.com/images/hwViewForSwHackers.pdf) 내용을 참고하여 마저 작성해보려 한다.
