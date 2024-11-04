@@ -23,7 +23,7 @@ last_modified_at: 2023-06-20
 
 이전에도 [Searching with consistent prioritization for multi-agent path finding](https://arxiv.org/abs/1812.06356)같은 논문에서 정보를 재활용 해서 하는 방식이 소개 되었지만, 직접적으로 constraint를 재활용 하는 방식은 없었던 것 같다. 아직 해당 논문을 읽어보진 못해서 간단하게 constraint를 이용한 결과가 없었던 이유는 [밤늦게 여는 카페](https://goodahn.tistory.com/)님의 블로그의 [포스트](https://goodahn.tistory.com/214)에서 간접적으로 찾을 수 있었다. 자꾸 공부하면 공부하면서 더 찾고 읽어볼것이 많아지는것 같다 ㅠㅜ
 
-그렇기 때문에 이번 포스트에서는 비슷했던 내 아이디어도 정리할 겸, 해당 논문의 자세한 내용 정리에 더불어 내가 생각했던 아이디어까지 같이 비고/정리해보려고 한다.
+그렇기 때문에 이번 포스트에서는 비슷했던 내 아이디어도 정리할 겸, 해당 논문의 자세한 내용 정리에 더불어 내가 생각했던 아이디어까지 같이 비교, 정리해보려고 한다.
 
 <br>
 
