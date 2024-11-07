@@ -58,19 +58,30 @@ LPCBS에서는 기존의 [CBS](https://reofard.github.io/path_finding/2023/05/20
 
 ### **Definition 1**
 
-> ???
+> 이전 DMAPF의 계산결과중 i번째 agent의 경로는 $l_i$와 OPEN리스트의 특정 노드 $N$이 있을 때 다음과 같은 조건을 만족하면 $time-consistent$라고 한다.
+> $$
+> N.solution^i(t_{curr}) = l_i(t_{curr}) 
+> $$
+> 이때 시간 $t_{curr}$을 기준으로 low-level search를 진행하면 경로의 시작 위치는 항상 $l_i(t_{curr})$으로 고정되기 때문에 $time-consistent$를 전개해도, $time-consistent$한 노드가 생성이 된다.
 
-### **Proposition 2**
+### **Definition 2**
 
-> ???
+> 모든 허용가능한 솔루션 $p$에 대해 OPEN list에 $p$를 허용하는 노드가 존재하면, OPEN list를 Constraints-Completed하다고 한다. 해당 명제는 CBS를 진행할 때 항상 만족하게 된다.
 
-그럼 위의 전제를 기반으로 DMAPF의 문제에서 CBS가 최적임을 증명해보자
-
-### **Proof**
-
-> ???
+이 전제조건을 기반으로 LPCBS가 어떻게 추가된 agent를 이용하여 최적의 해를 계산하는지 알아보자.
 
 <br>
+
+## **문제점과 증명**
+
+LPCBS의 기본 아이디어는 현재 timestep에서 새로 추가된 에이전트의 경로를 계획하는 동시에 이전에 수행한 CBS의 정보를 기반으로 실행 중인 에이전트의 경로를 조정하는 것이다. 이전 사이클의 정보를 상속받기위해서는 두가지 문제점이 있다.
+
+1. Outdated Node: 노드 $N$이 $time-consistent$한 경우, 이를 Outdated 노드라고 한다. 이 노드는 전개되더라도 현재 상황에 맞지 않는 경로만 생성되기 때문에 사용할 수 없다.
+2. Outdated Constraint: 특정 노드 $N$에 포함된 Constraint 중 일부가 Timestep이 $t_{curr}$보다 앞선 경우가 있다. 이러한 제약조건들은 이후 경로탐색에 전혀 필요가 없다.
+
+위의 문제가 해결되더라도, 과연 LPCBS가 실제로 최적성을 보장하는가에 대한 논의가 필요하다. 기존에 CBS는 하나의 루트 노드에서 시작되면 최적의 솔루션을 반환할 수 있다는 것을 증명되어있다. 하지만 LPCBS는 이전사이클의 OPEN list를 상속받아 검색을 시작하기 때문에 다시 증명이 필요하다. 상속받은 Node들과 주어진 timestep부터 최적의 경로를 뽑을 수 있다는 것을 증명해보자.
+
+### **Lemma 1**: time-consistent한 노드만 갖고, constraints-completed한 OPEN-list를 기반으로 항상 CBS는 최적의 해를 반환한다.
 
 ## **후기**
 
