@@ -83,6 +83,24 @@ LPCBS의 기본 아이디어는 현재 timestep에서 새로 추가된 에이전
 
 ### **Lemma 1**: time-consistent한 노드만 갖고, constraints-completed한 OPEN-list를 기반으로 항상 CBS는 최적의 해를 반환한다.
 
+> Best-First Search를 사용하므로, 가장 낮은 비용을 가진 노드가 항상 CBS 로직에서 반환된다. 예를 들어, 반환된 솔루션이 노드 $N_s$ 에서 나왔다면 항상 아래와 같은 식을 만족한다.
+>$$
+\forall N \in OPEN, N_s.cost \le N.cost
+>$$
+>여기서 Constraints-Completed 속성 덕분에 모든 유효한 솔루션 $p$에 대해 허용하는 노드 $N$이 존재한다. 이는 	$\forall N \in OPEN$일때 $\forall p \in CV(N)$을 항상 만족하여 모든 솔루션 $p$가 OPEN list에 의해 허용된다. 이때 **Definition 1**에 의해 모든 솔루션 $p$는 $time−consistent$한 노드에 의해 허용되기 때문에 아래와 같은 식을 만족한다.
+>$$
+\forall p \in N_s.solution, \forall a_i \in A, p^i(t_{curr}) = l_i(t_{curr})
+>$$
+>그렇기 때문에 반환된 최적의 해는 $t_{curr}$에서 항상 모든 에이전트들이 따를 수 있는 유효하고, 최적의 해를 반환한다.
+
+### **Eliminating Time-Inconsistency of Outdated Nodes**
+
+**Lemma 1**은 계산의 기반이 되는 OPEN list가 constraints-completed하고, 모든 구성요소가 time-consistent하다는 조건이 있어야 하는데, 이전 CBS의 OPEN list는 $time-consistent$하지 않은 노드 $\bar{N}$을 갖는다. 또한 모든 $\bar{N}$ 삭제하더라도 OPEN list의 constraints-completed함이 유지가 된다는 것도 보장해야하는데, 이를 한번 확인해보자.
+
+![Time-Inconsistent Node](/assets/img/Time-Inconsistent.png)
+
+위의 그림에서 빨간 선은 이전 MAPF의 솔루션노드 $N_s.solution$이라고 하자. 그리고 OPEN list의 또다른 노드를 $\bar{N}$이라고 하고, $\bar{N}.solution$을 파란선이라고 해보자. $N_s.solution$을 진행하던중 timestep이 2일때 새로운 agent가 추가되어 다시 LPCBS를 진행한다고 하자. 이때 $N_s.solutionl_1(t_{curr}) \ne \bar{N}.solution_1(t_{curr})$<sup>각각 (1,3),  (2,2)이다</sup> 즉, $time-consistent$가 OPEN에 존재할 수 있다.
+
 ## **후기**
 
 내용
