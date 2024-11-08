@@ -93,13 +93,32 @@ LPCBS의 기본 아이디어는 현재 timestep에서 새로 추가된 에이전
 >$$
 >그렇기 때문에 반환된 최적의 해는 $t_{curr}$에서 항상 모든 에이전트들이 따를 수 있는 유효하고, 최적의 해를 반환한다.
 
+<br>
+
 ### **Eliminating Time-Inconsistency of Outdated Nodes**
 
-**Lemma 1**은 계산의 기반이 되는 OPEN list가 constraints-completed하고, 모든 구성요소가 time-consistent하다는 조건이 있어야 하는데, 이전 CBS의 OPEN list는 $time-consistent$하지 않은 노드 $\bar{N}$을 갖는다. 또한 모든 $\bar{N}$ 삭제하더라도 OPEN list의 constraints-completed함이 유지가 된다는 것도 보장해야하는데, 이를 한번 확인해보자.
+**Lemma 1**은 계산의 기반이 되는 OPEN list가 constraints-completed하고, 모든 구성요소가 time-consistent하다는 조건이 있어야 하는데, 이전 CBS의 OPEN list는 $time-consistent$하지 않은 노드 $\bar{N}$을 갖는다. 모든 $\bar{N}$에 대해 어떻게 처리하여 OPEN list의 constraints-completed함을 유지하는지 한번 확인해보자.
 
 ![Time-Inconsistent Node](/assets/img/Time-Inconsistent.png)
 
 위의 그림에서 빨간 선은 이전 MAPF의 솔루션노드 $N_s.solution$이라고 하자. 그리고 OPEN list의 또다른 노드를 $\bar{N}$이라고 하고, $\bar{N}.solution$을 파란선이라고 해보자. $N_s.solution$을 진행하던중 timestep이 2일때 새로운 agent가 추가되어 다시 LPCBS를 진행한다고 하자. 이때 $N_s.solutionl_1(t_{curr}) \ne \bar{N}.solution_1(t_{curr})$<sup>각각 (1,3),  (2,2)이다</sup> 즉, $time-consistent$가 OPEN에 존재할 수 있다.
+
+$time-inconsistent$한 노드 $\bar{N}$를 해결하기 위해 LPCBS에서는 경로를 조정한다. 예를 들어 위 그림의 경우 2번 에이전트의 경로는 $time-consistent$하다. 그렇기 때문에 그냥 경로에서 현재위치를 기준으로 앞부분을 자르기만 하면 된다. 하지만 1번 에이전트의 경로는 $time-inconsistent$하기 때문에 현재 위치부터 목적지까지 경로를 Low-level search를 통해 재계획하여 해당 노드를 $time-consistent$하게 만든다. 특정 노드 $N$에 대해 $time-consistent$하게 재가공하는 방법은 아래 그림과 같다.
+
+![time-consistent logic](/assets/img/Time-consistent%20algorithm.png)
+
+<br>
+
+### **Eliminating Outdated Constraints**
+
+Outdated Constraint에 대해 다루기 전에 해당 논문에서 제안한 Constraint tree에 대해 잠깐 언급하고 가자. 사실 회사에서 CBS를 자체개발 할 때 사이클이 없는 트리의 특성을 이용해서 메모리를 아꼈던 방식인데, 여기서 보니까 반가웠다. LPCBS에서는 CT Node가 각 노드가 필요한 constraint를 모두 갖고있지 않는다. 대신 부모노드에서 발생한 충돌에서 나온 constraint만 갖는데, 실제 필요한 constraint 집합을 계산할때는 상위 노드로 이동하면서 조상노드의 제약조건을 갖고와 사용한다.
+
+![lifelong Constraint Tree](/assets/img/Lifelong%20ConstraintTree.png)
+
+예를들어 위 그림에서 CT Node인 $\{c0, c1, ...\}$는 각각 부모노드에서 발생한 충돌을 해결하기위한 제약조건만을 갖고, $N_{c3}$등의 리프노드에서 제약조건을 갖고오기위해선 $\{c3, c1, c0\}$로 트리를 거슬러 올라가며 제약조건 집합을 완성한다.
+
+그렇다면 이러한 CT에서 어떻게 $constraints-completed$속성을 유지하며 $t_{curr}$시점 이전에 걸린 제약조건을 제거하는지 확인해보자.
+<br>
 
 ## **후기**
 
