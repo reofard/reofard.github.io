@@ -39,7 +39,7 @@ last_modified_at: 2024-12-07
 
 ## **Corridor Conflict**
 
-MAPF문제를 효율적으로 해결하기 위해서 이번논문에서는 Corridor Conflict를 중점적으로 다룬다. **Corridor Conflict(복도 충돌)**은 **두 에이전트가 서로 반대 방향으로 복도를 동시에 지나려고 할 때 발생하는 충돌**을 의미한다. 이를 해결하려면 한 에이전트가 다른 에이전트가 복도를 완전히 통과할 때까지 기다려야 하는데, 이는 MAPF 문제를 크게 복잡하게 만든다. 따라서, 이번 논문에서는 Corridor Conflict의 감지 및 효율적인 해결에 대해 중점적으로 다룬다고 한다.
+MAPF문제를 효율적으로 해결하기 위해서 이번논문에서는 Corridor Conflict를 중점적으로 다룬다. **Corridor Conflict**은 **두 에이전트가 서로 반대 방향으로 복도를 동시에 지나려고 할 때 발생하는 충돌**을 의미한다. 이를 해결하려면 한 에이전트가 다른 에이전트가 복도를 완전히 통과할 때까지 기다려야 하는데, 이는 MAPF 문제를 크게 복잡하게 만든다. 따라서, 이번 논문에서는 Corridor Conflict의 감지 및 효율적인 해결에 대해 중점적으로 다룬다고 한다.
 
 복도 $C$는 두 개의 끝점 $(v_{q1}), (v_{q2})$와, 그 사이의 연결된 정점 집합 $\overline{C} = \{v_{c1}, \dots, v_{cL}\} \subseteq V_\mathcal{M}$으로 구성된다. 복도 길이 $\text{len}(C)$는 끝점 $v_{q1}$와 $v_{q2}$ 사이의 거리, 즉 두 정점을 이동하는 데 걸리는 시간으로 정의하고 아래 식과 같이 나타 낼 수 있고, $|\overline{C}|$는 $\overline{C}$내의 정점의 수가 된다.
 
@@ -61,20 +61,83 @@ $$
 
 아래 그림은 Anytime-RHCR 알고리즘의 의사코드이다. 
 
-![협소로 그림](/assets/img/AnytimeRHCR.png)
+![AnytimeRHCR](/assets/img/AnytimeRHCR.png)
 
 Anytime-RHCR 알고리즘의 주요 흐름은 다음과 같다.
 
-    1. 현재 작업을 완료한 Agent에게 미완료된 작업을 할당
-    2. 모든 Agent가 할당된 작업을 실행할 수 있도록 경로를 $\lambda$ 단위의 정기적인 시간 간격으로 반복적으로 계획
-    3. 초기 경로는 작은 윈도우 $\omega_{init}$를 사용해 빠르게 생성
-    4. 수정 집합 (modification set)의 하위 경로를 확장된 윈도우 $\omega_{extd}$​에서 개선
+  1. 현재 작업을 완료한 Agent에게 미완료된 작업을 할당
+  2. 모든 Agent가 할당된 작업을 실행할 수 있도록 경로를 $\lambda$ 단위의 정기적인 시간 간격으로 반복적으로 계획
+  3. 초기 경로는 작은 윈도우 $\omega_{init}$를 사용해 빠르게 생성
+  4. 수정 집합 (modification set)의 하위 경로를 확장된 윈도우 $\omega_{extd}$​에서 개선
 
 수정 집합은 $\omega_{extd}$기반으로 계산한 경로 집합 $P$에서 $\omega_{extd}$ 시간에서 발생하는 충돌에 연관된 에이전트들을 기반으로 결정된다. 이렇게 Anytime-RHCR은 기존의 RHCR보다 더 넓은 범위에서 충돌을 검출하고, 수정집합을 만들어서 경로를 개선하는 방식으로 협소로 문제를 해결한다.
 
 이러한 과정을 통해 Anytime-RHCR은 초기 경로를 빠르게 생성하고, 중요한 충돌을 해결하며 전체 솔루션 품질을 지속적으로 향상시킬 수 있다고 한다.
 
+<br>
+
 ## Selection on the Modification Set
+
+앞서 설명한 알고리즘 중 수정 집합 $\mathcal{A}_M$을 결정하는 것 솔루션의 퀄리티나 계산 속도를 구하는데, 큰 영향을 미친다. 이는 앞서서 [ICTS에 다룬 포스트](https://reofard.github.io/path_finding/2023/05/07/ICTS-%EC%B5%9C%EC%A0%81%EC%9D%98-%EA%B2%BD%EB%A1%9C-%EC%A1%B0%ED%95%A9%EC%9D%84-%EC%B0%BE%EC%95%84%EB%B3%B4%EC%9E%90!.html)에어 말했다시피 ID<sup>Independence Detection</sup>알고리즘에서 아이디어를 따온 듯 한데, 간단히 말해서 MAPF problem을 계산하는데 걸리는 시간은 보통 Agent의 갯수에 따라 지수적으로 증가하기 때문인 듯 하다.
+
+그렇다면 Anytime-RHCR에서는 어떤 방식을 통해서 $\mathcal{A}_M$을 결정하는지 간단하게 살펴보자. 가장 첫번째로 제안되는 방법은 충돌로 연관된 Agent를 찾아 $CF$를 해결하는 것이다. 이 방법을 통해 전체 솔루션에서 충돌을 모두 해결하고난 뒤 이후에 솔루션의 최적성을 높인다.
+
+
+### **If conflicts exist**
+
+충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = (V_{CF}, E_{CF})$ 정의하여 나타낸다. 여기서 각 정점인 $\mathcal{v} \in V_{CF}$는 각 agent를 나타내고, 간선인 $\mathcal{e} \in E_{CF}$는 $\omega_{init} < t \le \omega_{extd}$인 두 agent간의 conflict이다. Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
+
+해당 논문에서 이러한 $\mathcal{G}_{CF}$를 이용해서 $\mathcal{A}_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}_{CF}$를 고르는 것이다. 그리고 난 뒤, $|{V'}_{CF}|$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
+
+우선 $|{V'}_{CF}| > N_M$인 경우에는 ${V'}_{CF}$중 랜덤하게 $N_M$개를 골라 $\mathcal{A}_M$를 구성한다. 반대로 $|{V'}_{CF}| < N_M$인 경우에는 ${V'}_{CF}$ 중 랜덤한 agent를 고르고, 해당 agent의 경로를 막는 agent까지 포함하여 $\mathcal{A}_M$를 구성한다.
+
+### **If there are no conflicts**
+
+만약 지정한 시간 범위 내에 충돌이 없는경우, RHCR의 방법론에 의해 $\mathcal{A}_M$를 구성한다. 간단하게 설명하면 다음과 같다.
+
+  1. 모든 agent 중 optimal path와 mapf를 통해 계산된 경로의 시간이 가장 많이 차이나는 $a_i$를 $\mathcal{A}_M$를 추가
+  2. 나머지 agent 중 $a_i$를 가로막는 agent의 집합을 $\mathcal{A}_M$에 추가한다.
+  3. $|{V'}_{CF}| = N_M$가 될때까지 1번과 2번을 반복한다.
+
+이러한 과정을 통해 가장 지연된 agent를 찾고 해당 agent의 경로를 개선한다.
+
+<br>
+
+# **Corridor Conflict-Based Search**
+
+이번 Section에서는 수정집합에 대해 경로를 개선할때 사용하는 Corridor-CBS에 대해 설명하려고 한다. Corridor-CBS은 기본적인 [CBS알고리즘](https://reofard.github.io/path_finding/2023/05/20/CBS-MAPF%EA%B3%84%EC%9D%98-%EC%84%B1%EA%B2%BD.html)을 확장한 알고리즘으로 Corridor Conflict를 효율적으로 해결할 수 있는 알고리즘이다.
+
+## **Pseudo Code**
+
+아래 그림은 Corridor-CBS 알고리즘의 의사코드이다. [기존의 CBS](https://reofard.github.io/path_finding/2023/05/20/CBS-MAPF%EA%B3%84%EC%9D%98-%EC%84%B1%EA%B2%BD.html)에서 확장된 내용은 파란색으로 표시되었다.
+
+![C-CBS](/assets/img/Corridor-CBS.png)
+
+Corridor-CBS 알고리즘에서 확장된 로직은 다음과 같다.
+
+Corridor-CBS는 이러한 문제를 해결하기 위해 다음의 개선 단계를 추가합니다:
+
+  1. corridor symmetry reasoning: 좁은 통로에서 발생하는 대칭 문제를 분석하고 이를 효율적으로 처리
+
+  2. prioritizing corridor conflict: 충돌 목록에서 좁은 통로에서 발생한 충돌을 우선적으로 선택해 해결
+
+  3. corridor heuristic: 좁은 통로 충돌을 해결하기 위해 추가적인 휴리스틱을 사용하여 탐색 효율성을 향상.
+
+이러한 과정을 통해 Corridor-CBS는 효과적으로 topological map에서 협소로 문제를 효과적으로 해결한다고 한다.
+
+
+## **corridor symmetry reasoning**
 
 내용
 
+## **prioritizing corridor conflict**
+
+내용
+
+## **corridor heuristic**
+
+내용
+
+# **후기**
+
+단순히 저자분이 한국인이셔서 신기한 마음에 읽기 시작한 논문이었지만 공장 환경에서 발생할 수 있는 여러가지 상황에 대해 다양한 논문에서 소개된 아이디어를 통해 해결하려고 하셨던 부분이 보여서 내가 하는 업무에서도 많은 참고가 되었던 논문이었던것 같다. 앞으로도 한국에서도 MAPF 분야가 더 활성화 되어서 아이디어와 의견을 교류할 수 있는 기반이 더 다져지면 좋을 것 같다.
