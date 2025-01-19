@@ -166,7 +166,7 @@ $$
 
 ![Edge-weighted Minimum Vertex Cover](/assets/img/corridor_hueristics.png)
 
-Corridor conflict를 기반으로 한 휴리스틱 계산의 예는 다음과 같다. $\mathcal{N}$이 MAPF conflict를 고려하지 최단 경로를 가진 노드라고 가정해 보자. 이때 $\mathcal{N}$에서 corridor conflict를 검출하고, GCCF를 구성하면 위 그림에서 (b)와 같은 그래프가 나온다. 그런 다음 Edge-weighted Minimum Vertex Cover 문제를 해결하여 각 Agent에 걸릴 예상 Constraint를 계산한다. $a_1$에 6, $a_2$에 1, $a_4$에 7의 예상 최소 제약시간이 계산되면서 $\mathcal{N}$의 hueristic 값은 $\sum_{{v_i} \in V_{CCF}} {x_i} : h = 6 + 1 + 0 + 7 + 0 + 0 + 0 = 14$가 된다.
+Corridor conflict를 기반으로 한 휴리스틱 계산의 예는 다음과 같다. $\mathcal{N}$이 MAPF conflict를 고려하지 최단 경로를 가진 노드라고 가정해 보자. 이때 $\mathcal{N}$에서 corridor conflict를 검출하고, GCCF를 구성하면 위 그림에서 (b)와 같은 그래프가 나온다. 그런 다음 Edge-weighted Minimum Vertex Cover 문제를 해결하여 각 Agent에 걸릴 예상 Constraint를 계산한다. $a_1$에 6, $a_2$에 1, $a_4$에 7의 예상 최소 제약시간이 계산되면서 $\mathcal{N}$의 hueristic 값은 $\sum_{v_i \in V_{CCF}} {x_i} : h = 6 + 1 + 0 + 7 + 0 + 0 + 0 = 14$가 된다.
 
 # **후기**
 
