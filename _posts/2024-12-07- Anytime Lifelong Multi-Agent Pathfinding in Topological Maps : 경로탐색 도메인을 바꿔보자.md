@@ -35,7 +35,9 @@ last_modified_at: 2024-12-07
 
 ![협소로 그림](/assets/img/narrow_corridor.png)
 
-맵 이번 논문에서 MAPF instance는 topological map $\mathcal{G}_M$와 agent의 집합 $\mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \}$으로 이루어 진다. 이때 $a_i \in \_mathcal_{A}$는 각각의 고유한 시작노드와 종료노드 $s_i \in V_\mathcal{M}, e_i \in E_\mathcal{M}$을 가진다. 이 외의 가정은 거의 대부분 기존의 DMAPF instance와 같다.
+{% raw %}
+이번 논문에서 MAPF instance는 topological map $\mathcal{G}_M$와 agent의 집합 $\mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \}$으로 이루어 진다. 이때 $a_i \in \_mathcal_{A}$는 각각의 고유한 시작노드와 종료노드 $s_i \in V_\mathcal{M}, e_i \in E_\mathcal{M}$을 가진다. 이 외의 가정은 거의 대부분 기존의 DMAPF instance와 같다.
+{% endraw %}
 
 ## **Corridor Conflict**
 
