@@ -87,7 +87,7 @@ Anytime-RHCR 알고리즘의 주요 흐름은 다음과 같다.
 
 ### **If conflicts exist**
 
-충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = {(V_{CF}, E_{CF})}$ 정의하여 나타낸다. 
+충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = (V_{CF}, E_{CF})$ 정의하여 나타낸다. 
 여기서 각 정점인 $\mathcal{v} \in V_{CF}$는 각 agent를 나타내고, 간선인 $\mathcal{e} \in E_{CF}$는 $\omega_{init} < t \le \omega_{extd}$인 두 agent간의 conflict이다. 
 Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
 
