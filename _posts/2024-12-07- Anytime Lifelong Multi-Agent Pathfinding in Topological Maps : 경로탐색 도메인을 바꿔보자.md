@@ -31,19 +31,19 @@ last_modified_at: 2024-12-07
 
 # **lifelong MAPF in a topological map**
 
-그렇다면 저자가 정의한 lifelong MAPF in a topological map의 문제 정의에 대해 한번 엄밀히 짚고 넘어가보자. 우선 topological map은 정점 $\mathcal{v} \in V_M$과 간선 $\mathcal{e} \in E_M$으로 표현되는 단방향 그래프 $\mathcal{G}_M = (V_M, E_M)$로 표현이 된다. 여기까지는 보통의 단방향 그래프를 나타내는 듯 하지만, 이 논문에서는 Warehouse에서의 MAPF문제를 해결하기 위해 아래 그림과 같이 협소로가 많은 그래프를 문제 도메인으로 삼는다.
+그렇다면 저자가 정의한 lifelong MAPF in a topological map의 문제 정의에 대해 한번 엄밀히 짚고 넘어가보자. 우선 topological map은 정점 $\mathcal{v} \in V\_M$과 간선 $\mathcal{e} \in E\_M$으로 표현되는 단방향 그래프 $\mathcal{G}\_M = (V\_M, E\_M)$로 표현이 된다. 여기까지는 보통의 단방향 그래프를 나타내는 듯 하지만, 이 논문에서는 Warehouse에서의 MAPF문제를 해결하기 위해 아래 그림과 같이 협소로가 많은 그래프를 문제 도메인으로 삼는다.
 
 
 ![협소로 그림](/assets/img/narrow_corridor.png)
 
 
-이번 논문에서 MAPF instance는 topological map $\mathcal{G}_{M}$와 agent의 집합인<span></span> $\mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \}$으로 이루어 진다. 이때 $a_i \in \mathcal{A}$는 각각의 고유한 시작노드 $s_i\in V_\mathcal{M}$와 종료노드 $e_i\in E_\mathcal{M}$을 가진다. 이 외의 가정은 거의 대부분 기존의 DMAPF instance와 같다.
+이번 논문에서 MAPF instance는 topological map $\mathcal{G}\_{M}$와 agent의 집합인<span></span> $\mathcal{A} = \{ \mathcal{a}\_1, ... , \mathcal{a}\_n \}$으로 이루어 진다. 이때 $a\_i \in \mathcal{A}$는 각각의 고유한 시작노드 $s_i\in V\_\mathcal{M}$와 종료노드 $e\_i\in E\_\mathcal{M}$을 가진다. 이 외의 가정은 거의 대부분 기존의 DMAPF instance와 같다.
 
 ## **Corridor Conflict**
 
 MAPF문제를 효율적으로 해결하기 위해서 이번논문에서는 Corridor Conflict를 중점적으로 다룬다. **Corridor Conflict**은 **두 에이전트가 서로 반대 방향으로 복도를 동시에 지나려고 할 때 발생하는 충돌**을 의미한다. 이를 해결하려면 한 에이전트가 다른 에이전트가 복도를 완전히 통과할 때까지 기다려야 하는데, 이는 MAPF 문제를 크게 복잡하게 만든다. 따라서, 이번 논문에서는 Corridor Conflict의 감지 및 효율적인 해결에 대해 중점적으로 다룬다고 한다.
 
-복도 $C$는 두 개의 끝점 $(v_{q1}), (v_{q2})$와, 그 사이의 연결된 정점 집합 $\overline{C} = \{v_{c1}, \dots, v_{cL}\} \subseteq V_\mathcal{M}$으로 구성된다. 복도 길이 $\text{len}(C)$는 끝점 $v_{q1}$와 $v_{q2}$ 사이의 거리, 즉 두 정점을 이동하는 데 걸리는 시간으로 정의하고 아래 식과 같이 나타 낼 수 있고, $ \mid \overline{C} \mid $는 $ \overline{C} $내의 정점의 수가 된다.
+복도 $C$는 두 개의 끝점 $(v\_{q1}), (v_{q2})$와, 그 사이의 연결된 정점 집합 $\overline{C} = \{v_{c1}, \dots, v_{cL}\} \subseteq V_\mathcal{M}$으로 구성된다. 복도 길이 $\text{len}(C)$는 끝점 $v_{q1}$와 $v_{q2}$ 사이의 거리, 즉 두 정점을 이동하는 데 걸리는 시간으로 정의하고 아래 식과 같이 나타 낼 수 있고, $ \mid \overline{C} \mid $는 $ \overline{C} $내의 정점의 수가 된다.
 
 $$
 \text{len}(C) = \mid\overline{C}\mid + 1
@@ -57,7 +57,7 @@ $$
 
 해당 논문에서는 Lifelong MAPF(Multi-Agent Path Finding) 문제를 해결하기 위해 RHCR(Rolling Horizon Collision Resolution) 방식을 한다. 하지만 협소로가 많은 Graph에서는 RHCR을 적용 하기에는 적합하지 않다. 시간 구간 $\omega$가 작을 경우 긴 복도에서 **교착 상태(deadlock)**가 발생할 가능성이 높아지기 때문이다. $\omega$를 늘리면 이러한 문제를 완화할 수 있지만, 계산량이 크게 증가하여 실시간 처리에 문제가 생기게 된다.
 
-이러한 문제를 해결하기 위해 해당 논문에서는 Anytime-RHCR를 제안한다. 이 알고리즘은 초기 계획 단계에서는 ECBS를 사용하여 짧은 시간 구간 $\omega_{init}$에서 초기 경로를 생성한다. 이후 특정 에이전트 그룹을 선택하여, 최적 해법인 Corridor-CBS를 통해 확장된 시간 구간 $\omega_{extd}$에서 경로를 다시 개선한다.
+이러한 문제를 해결하기 위해 해당 논문에서는 Anytime-RHCR를 제안한다. 이 알고리즘은 초기 계획 단계에서는 ECBS를 사용하여 짧은 시간 구간 $\omega\_{init}$에서 초기 경로를 생성한다. 이후 특정 에이전트 그룹을 선택하여, 최적 해법인 Corridor-CBS를 통해 확장된 시간 구간 $\omega\_{extd}$에서 경로를 다시 개선한다.
 
 ## Pseudo Code
 
@@ -80,30 +80,30 @@ Anytime-RHCR 알고리즘의 주요 흐름은 다음과 같다.
 
 ## Selection on the Modification Set
 
-앞서 설명한 알고리즘 중 수정 집합 $\mathcal{A}_M$을 결정하는 것 솔루션의 퀄리티나 계산 속도를 구하는데, 큰 영향을 미친다. 이는 앞서서 [ICTS에 다룬 포스트](https://reofard.github.io/path_finding/2023/05/07/ICTS-%EC%B5%9C%EC%A0%81%EC%9D%98-%EA%B2%BD%EB%A1%9C-%EC%A1%B0%ED%95%A9%EC%9D%84-%EC%B0%BE%EC%95%84%EB%B3%B4%EC%9E%90!.html)에어 말했다시피 ID<sup>Independence Detection</sup>알고리즘에서 아이디어를 따온 듯 한데, 간단히 말해서 MAPF problem을 계산하는데 걸리는 시간은 보통 Agent의 갯수에 따라 지수적으로 증가하기 때문인 듯 하다.
+앞서 설명한 알고리즘 중 수정 집합 $\mathcal{A}\_M$을 결정하는 것 솔루션의 퀄리티나 계산 속도를 구하는데, 큰 영향을 미친다. 이는 앞서서 [ICTS에 다룬 포스트](https://reofard.github.io/path_finding/2023/05/07/ICTS-%EC%B5%9C%EC%A0%81%EC%9D%98-%EA%B2%BD%EB%A1%9C-%EC%A1%B0%ED%95%A9%EC%9D%84-%EC%B0%BE%EC%95%84%EB%B3%B4%EC%9E%90!.html)에어 말했다시피 ID<sup>Independence Detection</sup>알고리즘에서 아이디어를 따온 듯 한데, 간단히 말해서 MAPF problem을 계산하는데 걸리는 시간은 보통 Agent의 갯수에 따라 지수적으로 증가하기 때문인 듯 하다.
 
-그렇다면 Anytime-RHCR에서는 어떤 방식을 통해서 $\mathcal{A}_M$을 결정하는지 간단하게 살펴보자. 가장 첫번째로 제안되는 방법은 충돌로 연관된 Agent를 찾아 $CF$를 해결하는 것이다. 이 방법을 통해 전체 솔루션에서 충돌을 모두 해결하고난 뒤 이후에 솔루션의 최적성을 높인다.
+그렇다면 Anytime-RHCR에서는 어떤 방식을 통해서 $\mathcal{A}\_M$을 결정하는지 간단하게 살펴보자. 가장 첫번째로 제안되는 방법은 충돌로 연관된 Agent를 찾아 $CF$를 해결하는 것이다. 이 방법을 통해 전체 솔루션에서 충돌을 모두 해결하고난 뒤 이후에 솔루션의 최적성을 높인다.
 
 
 ### **If conflicts exist**
 
-충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = (V_{CF}, E_{CF})$ 정의하여 나타낸다. 
+충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}\_{CF} = (V_{CF}, E_{CF})$ 정의하여 나타낸다. 
 여기서 각 정점인 $\mathcal{v} \in V_{CF}$는 각 agent를 나타내고, 간선인 $\mathcal{e} \in E_{CF}$는 $\omega_{init} < t \le \omega_{extd}$인 두 agent간의 conflict이다. 
 Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
 
 
-해당 $ $ 논문에서 이러한 $\mathcal{G}_{CF}$를 이용해서 $\mathcal{A}_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}_{CF}$를 고르는 것이다. 그리고 난 뒤, $\mid{V'}_{CF}\mid$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
+해당 논문에서 이러한 $\mathcal{G}\_{CF}$를 이용해서 $\mathcal{A}\_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}\_{CF}$를 고르는 것이다. 그리고 난 뒤, $\mid{V'}\_{CF}\mid$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
 
 
-우선 $\mid{V'}_{CF}\mid > N_M$인 경우에는 ${V'}_{CF}$중 랜덤하게 $N_M$개를 골라 $\mathcal{A}_M$를 구성한다. 반대로 $\mid{V'}_{CF}\mid < N_M$인 경우에는 ${V'}_{CF}$ 중 랜덤한 agent를 고르고, 해당 agent의 경로를 막는 agent까지 포함하여 $\mathcal{A}_M$를 구성한다.
+우선 $\mid{V'}\_{CF}\mid > N_M$인 경우에는 ${V'}\_{CF}$중 랜덤하게 $N_M$개를 골라 $\mathcal{A}\_M$를 구성한다. 반대로 $\mid{V'}\_{CF}\mid < N_M$인 경우에는 ${V'}\_{CF}$ 중 랜덤한 agent를 고르고, 해당 agent의 경로를 막는 agent까지 포함하여 $\mathcal{A}\_M$를 구성한다.
 
 ### **If there are no conflicts**
 
-만약 지정한 시간 범위 내에 충돌이 없는경우, RHCR의 방법론에 의해 $\mathcal{A}_M$를 구성한다. 간단하게 설명하면 다음과 같다.
+만약 지정한 시간 범위 내에 충돌이 없는경우, RHCR의 방법론에 의해 $\mathcal{A}\_M$를 구성한다. 간단하게 설명하면 다음과 같다.
 
-1. 모든 agent 중 optimal path와 mapf를 통해 계산된 경로의 시간이 가장 많이 차이나는 $a_i$를 $\mathcal{A}_M$를 추가
-2. 나머지 agent 중 $a_i$를 가로막는 agent의 집합을 $\mathcal{A}_M$에 추가한다.
-3. $\mid{V'}_{CF}\mid = N_M$가 될때까지 1번과 2번을 반복한다.
+1. 모든 agent 중 optimal path와 mapf를 통해 계산된 경로의 시간이 가장 많이 차이나는 $a_i$를 $\mathcal{A}\_M$를 추가
+2. 나머지 agent 중 $a_i$를 가로막는 agent의 집합을 $\mathcal{A}\_M$에 추가한다.
+3. $\mid{V'}\_{CF}\mid = N_M$가 될때까지 1번과 2번을 반복한다.
 
 이러한 과정을 통해 가장 지연된 agent를 찾고 해당 agent의 경로를 개선한다.
 
@@ -162,13 +162,13 @@ $$
 해당 내용은 Corridor-CBS에서 High-level Node를 선택할 때 corridor conflict를 고려한 hueristic 값을 고려하여 선택하는 로직에 대한 설명이다. Corridor conflict가 존재하는 high-level Node $\mathcal{N}$이 있을 때, corridor conflict에 의해 증가하는 값은 아래 식과 같다.
 
 $$
-\Delta c_{ij} = \bar {c}_{ij} - c_{ij}
+\Delta c_{ij} = \bar {c}\_{ij} - c_{ij}
 $$
 
 이때 $c_{ij}$는 $a_i$​와 $a_j$​가 corridor conflict 충돌이 없을 때 경로의 최소 비용이고, $c_{ij}$는 충돌을 고려한 현재 경로에서의 비용이다.
 
-해당 논문에서는 high-level node에서 휴리스틱 값을 계산하기 위해 $\mathcal{G}_{CCF} = {(V_
-{CCF, W_{CCF}})}$를 만든다. $\mathcal{G}_{CCF}$는 각 agent사이에 발생하는 Corridor Conflict에 의한 비용 증가 증분을 나타낸 그래프로 각 정점인 $\mathcal{v}_i \in V_{CCF}$는 각 agent를 나타내고, 간선인 $\mathcal{e}_{ij} \in E_{CCF}$는 두 agent간의 corridor conflict 관계를 나타내며 $\mathcal{e}_{ij}$는 corridor conflict로 인해 발생한 cost의 증분값 $\Delta c_{ij}$를 갖는다.
+해당 논문에서는 high-level node에서 휴리스틱 값을 계산하기 위해 $\mathcal{G}\_{CCF} = {(V_
+{CCF, W_{CCF}})}$를 만든다. $\mathcal{G}\_{CCF}$는 각 agent사이에 발생하는 Corridor Conflict에 의한 비용 증가 증분을 나타낸 그래프로 각 정점인 $\mathcal{v}\_i \in V_{CCF}$는 각 agent를 나타내고, 간선인 $\mathcal{e}\_{ij} \in E_{CCF}$는 두 agent간의 corridor conflict 관계를 나타내며 $\mathcal{e}\_{ij}$는 corridor conflict로 인해 발생한 cost의 증분값 $\Delta c_{ij}$를 갖는다.
 
 이제 hueristic값을 해결하기 위해 해당 그래프에서 Edge-weighted Minimum Vertex Cover 문제를 해결하여 통해 모든 conflict를 해결하기 위해 constraint가 걸려야 하는 모든 agent 집합중 계산 비용의 합이 가장 낮은 집합을 계산한다. 아래 그림을 보면서 간단히 설명해보겠다.
 
