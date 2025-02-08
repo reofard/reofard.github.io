@@ -41,7 +41,7 @@ last_modified_at: 2024-12-07
 
 MAPF문제를 효율적으로 해결하기 위해서 이번논문에서는 Corridor Conflict를 중점적으로 다룬다. **Corridor Conflict**은 **두 에이전트가 서로 반대 방향으로 복도를 동시에 지나려고 할 때 발생하는 충돌**을 의미한다. 이를 해결하려면 한 에이전트가 다른 에이전트가 복도를 완전히 통과할 때까지 기다려야 하는데, 이는 MAPF 문제를 크게 복잡하게 만든다. 따라서, 이번 논문에서는 Corridor Conflict의 감지 및 효율적인 해결에 대해 중점적으로 다룬다고 한다.
 
-복도 $C$는 두 개의 끝점 ${(v_{q1}), (v_{q2})}$와, 그 사이의 연결된 정점 집합 $\overline{C} = \{v_{c1}, \dots, v_{cL}\} \subseteq V_\mathcal{M}$으로 구성된다. 복도 길이 ${\text{len}(C)}$는 끝점 $v_{q1}$와 $v_{q2}$ 사이의 거리, 즉 두 정점을 이동하는 데 걸리는 시간으로 정의하고 아래 식과 같이 나타 낼 수 있고, $|\overline{C}|$는 $\overline{C}$내의 정점의 수가 된다.
+복도 $C$는 두 개의 끝점 ${(v_{q1}), (v_{q2})}$와, 그 사이의 연결된 정점 집합 $ \overline{C} = \{v_{c1}, \dots, v_{cL}\} \subseteq V_\mathcal{M} $으로 구성된다. 복도 길이 ${\text{len}(C)}$는 끝점 $v_{q1}$와 $v_{q2}$ 사이의 거리, 즉 두 정점을 이동하는 데 걸리는 시간으로 정의하고 아래 식과 같이 나타 낼 수 있고, $ \mid \overline{C} \mid $는 $\overline{C}$내의 정점의 수가 된다.
 
 $$
 \text{len}(C) = |\overline{C}| + 1
