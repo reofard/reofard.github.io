@@ -92,7 +92,7 @@ Anytime-RHCR 알고리즘의 주요 흐름은 다음과 같다.
 Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
 
 
-해당 논문에서 이러한 $\mathcal{G}_{CF}$를 이용해서 $\mathcal{A}_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}_{CF}$를 고르는 것이다. 그리고 난 뒤, $\mid{V'}_{CF}\mid$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
+해당$$ 논문에서 이러한 $\mathcal{G}_{CF}$를 이용해서 $\mathcal{A}_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}_{CF}$를 고르는 것이다. 그리고 난 뒤, $\mid{V'}_{CF}\mid$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
 
 
 우선 $\mid{V'}_{CF}\mid > N_M$인 경우에는 ${V'}_{CF}$중 랜덤하게 $N_M$개를 골라 $\mathcal{A}_M$를 구성한다. 반대로 $\mid{V'}_{CF}\mid < N_M$인 경우에는 ${V'}_{CF}$ 중 랜덤한 agent를 고르고, 해당 agent의 경로를 막는 agent까지 포함하여 $\mathcal{A}_M$를 구성한다.
