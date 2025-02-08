@@ -35,9 +35,7 @@ last_modified_at: 2024-12-07
 
 ![협소로 그림](/assets/img/narrow_corridor.png)
 
-맵 이번 논문에서 MAPF instance는 topological map $ \mathcal{G}_M $와 agent의
-
-집합 $ \mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \} $으로
+맵 이번 논문에서 MAPF instance는 topological map $ \mathcal{G}_M $와 agent의 집합 $ \mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \} $으로
 
 이루어 진다. 이때 $ a_i \in \mathcal{A} $는 각각의 
 
