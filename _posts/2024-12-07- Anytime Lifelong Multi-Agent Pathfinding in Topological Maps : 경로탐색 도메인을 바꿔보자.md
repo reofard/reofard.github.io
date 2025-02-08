@@ -33,7 +33,9 @@ last_modified_at: 2024-12-07
 
 그렇다면 저자가 정의한 lifelong MAPF in a topological map의 문제 정의에 대해 한번 엄밀히 짚고 넘어가보자. 우선 topological map은 정점 $\mathcal{v} \in V_M$과 간선 $\mathcal{e} \in E_M$으로 표현되는 단방향 그래프 $\mathcal{G}_M = (V_M, E_M)$로 표현이 된다. 여기까지는 보통의 단방향 그래프를 나타내는 듯 하지만, 이 논문에서는 Warehouse에서의 MAPF문제를 해결하기 위해 아래 그림과 같이 협소로가 많은 그래프를 문제 도메인으로 삼는다.
 
+
 ![협소로 그림](/assets/img/narrow_corridor.png)
+
 
 이번 논문에서 MAPF instance는 topological map $\mathcal{G}_{M}$와 agent의 집합 $\mathcal{A} = \{ \mathcal{a}_1, ... , \mathcal{a}_n \}$으로 이루어 진다. 이때 $a_i \in \mathcal{A}$는 각각의 고유한 시작노드와 종료노드 ${s_i}\in{V_{\mathcal{M}}, e_i \in E_{\mathcal{M}}}$을 가진다. 이 외의 가정은 거의 대부분 기존의 DMAPF instance와 같다.
 
@@ -85,7 +87,9 @@ Anytime-RHCR 알고리즘의 주요 흐름은 다음과 같다.
 
 ### **If conflicts exist**
 
-충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = {(V_{CF}, E_{CF})}$ 정의하여 나타낸다. 여기서 각 정점인 $\mathcal{v} \in V_{CF}$는 각 agent를 나타내고, 간선인 $\mathcal{e} \in E_{CF}$는 $\omega_{init} < t \le \omega_{extd}$인 두 agent간의 conflict이다. Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
+충돌을 통해 연관된 Agent를 찾아내는 과정은 충돌을 이용하여 Agent의 연관 관계를 나타내는 그래프인 $\mathcal{G}_{CF} = {(V_{CF}, E_{CF})}$ 정의하여 나타낸다.
+여기서 각 정점인 $\mathcal{v} \in V_{CF}$는 각 agent를 나타내고, 간선인 $\mathcal{e} \in E_{CF}$는 $\omega_{init} < t \le \omega_{extd}$인 두 agent간의 conflict이다.
+Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전에는 충돌이 존재하지 않고, Windowed MAPF Solver를 사용하기 때문에 $\omega_{extd}$이후의 충돌은 무시한다.
 
 해당 논문에서 이러한 $\mathcal{G}_{CF}$를 이용해서 $\mathcal{A}_M$를 구하는 방법은 꽤나 단순하다. 서로 충돌로 연결되어 있는 $\mathcal{v}' \in V_{CF}$들을 원소로 갖는 $V_{CF}$ 부분집합 중 가장 큰 부분집합 ${V'}_{CF}$를 고르는 것이다. 그리고 난 뒤, $|{V'}_{CF}|$와 $N_M$의 크기 관계에 따라 조금씩 로직이 바뀐다.
 
