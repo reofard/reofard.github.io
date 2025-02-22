@@ -18,7 +18,7 @@ last_modified_at: 2024-12-07
 ---
 
 # **Anytime Lifelong Multi-Agent Pathfinding in Topological Maps**
-
+---
 오늘도 MAPF논문을 찾아 헤매던 중, 저자의 이름이 이상한 MAPF논문을 보게되었다. 한국에서는 MAPF 분야가 잘 활성화 되어있지 않다고 생각 했는데 한국인 저자가 작성한 논문은 처음봐서 신기한 마음에 한번 논문을 읽어보았다. 최근에 공개되어 open acccess된 논문이었는데, 내가 평소에 고민하던 부분인, "어떻게해야 더 복잡한 환경에서도 MAPF를 적용할 수 있을까" 에 관련한 내용이라 더 신기했던것 같다.
 
 ![kiva 시스템](/assets/img/KIVA.jpg)
@@ -30,7 +30,7 @@ last_modified_at: 2024-12-07
 <br>
 
 # **lifelong MAPF in a topological map**
-
+---
 그렇다면 저자가 정의한 lifelong MAPF in a topological map의 문제 정의에 대해 한번 엄밀히 짚고 넘어가보자. 우선 topological map은 정점 $\mathcal{v} \in V\_M$과 간선 $\mathcal{e} \in E\_M$으로 표현되는 단방향 그래프 $\mathcal{G}\_M = (V\_M, E\_M)$로 표현이 된다. 여기까지는 보통의 단방향 그래프를 나타내는 듯 하지만, 이 논문에서는 Warehouse에서의 MAPF문제를 해결하기 위해 아래 그림과 같이 협소로가 많은 그래프를 문제 도메인으로 삼는다.
 
 
@@ -54,7 +54,7 @@ $$
 <br>
 
 # **Anytime-RHCR**
-
+---
 해당 논문에서는 Lifelong MAPF(Multi-Agent Path Finding) 문제를 해결하기 위해 RHCR(Rolling Horizon Collision Resolution) 방식을 한다. 하지만 협소로가 많은 Graph에서는 RHCR을 적용 하기에는 적합하지 않다. 시간 구간 $\omega$가 작을 경우 긴 복도에서 **교착 상태(deadlock)**가 발생할 가능성이 높아지기 때문이다. $\omega$를 늘리면 이러한 문제를 완화할 수 있지만, 계산량이 크게 증가하여 실시간 처리에 문제가 생기게 된다.
 
 이러한 문제를 해결하기 위해 해당 논문에서는 Anytime-RHCR를 제안한다. 이 알고리즘은 초기 계획 단계에서는 ECBS를 사용하여 짧은 시간 구간 $\omega\_{init}$에서 초기 경로를 생성한다. 이후 특정 에이전트 그룹을 선택하여, 최적 해법인 Corridor-CBS를 통해 확장된 시간 구간 $\omega\_{extd}$에서 경로를 다시 개선한다.
@@ -110,7 +110,7 @@ Anytime-RHCR은 RHCR알고리즘에 기반하기 때문에 $\omega_{init}$이전
 <br>
 
 # **Corridor Conflict-Based Search**
-
+---
 이번 Section에서는 수정집합에 대해 경로를 개선할때 사용하는 Corridor-CBS에 대해 설명하려고 한다. Corridor-CBS은 기본적인 [CBS알고리즘](https://reofard.github.io/path_finding/2023/05/20/CBS-MAPF%EA%B3%84%EC%9D%98-%EC%84%B1%EA%B2%BD.html)을 확장한 알고리즘으로 Corridor Conflict를 효율적으로 해결할 수 있는 알고리즘이다.
 
 ## **Pseudo Code**
@@ -177,5 +177,5 @@ $$
 Corridor conflict를 기반으로 한 휴리스틱 계산의 예는 다음과 같다. $\mathcal{N}$이 MAPF conflict를 고려하지 최단 경로를 가진 노드라고 가정해 보자. 이때 $\mathcal{N}$에서 corridor conflict를 검출하고, GCCF를 구성하면 위 그림에서 (b)와 같은 그래프가 나온다. 그런 다음 Edge-weighted Minimum Vertex Cover 문제를 해결하여 각 Agent에 걸릴 예상 Constraint를 계산한다. $a_1$에 6, $a_2$에 1, $a_4$에 7의 예상 최소 제약시간이 계산되면서 $\mathcal{N}$의 hueristic 값은 $\sum_{v_i \in V_{CCF}} {x_i} : h = 6 + 1 + 0 + 7 + 0 + 0 + 0 = 14$가 된다.
 
 # **후기**
-
+---
 단순히 저자분이 한국인이셔서 신기한 마음에 읽기 시작한 논문이었지만 공장 환경에서 발생할 수 있는 여러가지 상황에 대해 다양한 논문에서 소개된 아이디어를 통해 해결하려고 하셨던 부분이 보여서 내가 하는 업무에서도 많은 참고가 되었던 논문이었던것 같다. 앞으로도 한국에서도 MAPF 분야가 더 활성화 되어서 아이디어와 의견을 교류할 수 있는 기반이 더 다져지면 좋을 것 같다.
