@@ -17,7 +17,7 @@ date: 2025-01-03
 last_modified_at: 2025-01-03
 ---
 
-# **A Real-Time Rescheduling Algorithm for Multi-robot Plan Execution**
+# **[A Real-Time Rescheduling Algorithm for Multi-robot Plan Execution](https://ojs.aaai.org/index.php/ICAPS/article/view/31477)**
 ---
 이번논문은 EECBS, RHCR의 저자이신 Jiaoyang Li님의 연구실 페이지를를 살펴보던중 발견한 논문이다. 내가 로봇 관제 솔루션 업무해오면서 MAPF로 로봇을 돌릴 때, **로봇이 주어진 경로를 완벽하게 시간을 맞춰서 가는 경우가 더 드물었었다.** 그렇기 때문에 **MAPF 결과를 현실에 적용**할 수 있도록 여러가지 기법을 적용하여 해결을 했었던 기억이 있다. 그렇기 때문에 순수한 MAPF알고리즘을 실제 산업환경에 적용하기 위해서는 **경로 후처리 기법**이 더 중요한 경우도 많다고 생각해서 이번 논문에 더 흥미가 가고, 리뷰를 하게 되었다.
 
@@ -113,15 +113,85 @@ $reverse$ 연산이 좀 난해한데, 간단히 설명하면 아래그림과 같
     - 새로운 더미 간선 $\mathcal{E}\_{new} = \{(v^c_d, v_1), (v\_1, v\_2), ..., (v\_\Delta, v^c_{d+1}) \}$ 생성
     - $\mathcal{V} \leftarrow \mathcal{V} \cup \mathcal{V}\_{new}$,  $\mathcal{E}\_1 \leftarrow (\mathcal{E}\_1 \cup \mathcal{E}\_{new}) - \{(v^c\_d, v^c\_{d+1})\}$ 
 
-간단하게 위 로직에 대해서 설명하자면, 이미 satisfied 상태의 정점은 이미 로봇이 수행한 경로기 때문에, reverse할 수 없기 때문에 step1에서는 현재 수행 정보에 따라 TPG의 정점과 간선을 분류한다. 그 이후 지연된 agent에 대해 더미 정점과 새로운 간선을 생성하여, 에이전트가 지연되는 시간 동안 가상의 경로를 만들고, 이를 통해 에이전트가 경로를 계속 진행할 수 있도록 한다. 추가된 더미 정점들은 지연 시간을 처리하는 데 필요한 "가상의 이동"을 수행하며, 간선 수정은 경로를 나타낸다.
+간단하게 위 로직에 대해서 설명하자면, 이미 로봇이 수행한 경로인 satisfied 상태의 정점은 reverse할 수 없기 때문에 step1에서는 현재 수행 정보에 따라 TPG의 정점과 간선을 분류한다. 그 이후 지연된 agent에 대해 더미 정점과 새로운 간선을 생성하여, 에이전트가 지연되는 시간 동안 가상의 경로를 만들고, 이를 통해 에이전트가 경로를 계속 진행할 수 있도록 한다. 추가된 더미 정점들은 지연 시간을 처리하는 데 필요한 "가상의 이동"을 수행하며, 간선 수정은 경로를 나타낸다.
 
-이러한 과정을 통해 얻어진 $\mathcal{G}\_\mathcal{S}$는 모든 $\mathcal{S}\_{\mathcal{E}2}$의 요소에 $fix$연산을 수행하면 $\mathcal{G}\_0$가 나오고, $\mathcal{G}\_0$는 MAPF의 솔루션을 기반으로 만들어진 TPG이기 때문에 교착이 존재하지 않는다. 즉 $\mathcal{G}\_\mathcal{S}$에서 파생 가능한 $\mathcal{G}^\mathcal{S} - producible\ TPG$중에서는 항상 교착이 없는 해가 존재함을 보장 할 수 있다.
+이러한 과정을 통해 얻어진 $\mathcal{G}\_\mathcal{S}$는 모든 $\mathcal{S}\_{\mathcal{E}2}$의 요소에 $fix$연산을 수87행하면 $\mathcal{G}\_0$가 나오고, $\mathcal{G}\_0$는 MAPF의 솔루션을 기반으로 만들어진 TPG이기 때문에 교착이 존재하지 않는다. 즉 $\mathcal{G}\_\mathcal{S}$에서 파생 가능한 $\mathcal{G}^\mathcal{S} - producible\ TPG$중에서는 항상 교착이 없는 해가 존재함을 보장 할 수 있다.
 
 
-## **Initialize of SES**
+## **Switchable Edge Search (SES) Framework**
+
+SES(Switchable Edge Search)는 Heuristic Search 기반의 알고리즘으로, STPG 공간에서 A* 탐색을 통해 최적의 $\mathcal{G}^\mathcal{S} - producible\ TPG$를 찾는것이다. 이번 논문에서는 STPG 공간을 탐색하기 위해 Reduced TPG를 정의하여 $\mathcal{G}^\mathcal{S} - producible\ TPG$의 비용을 산출한다. 
+$\mathcal{G}\_\mathcal{S} = (\mathcal{V}, \mathcal{E}\_1, (\mathcal{S}\_{\mathcal{E}2}, \mathcal{N}\_{\mathcal{E}2}))$가 있을 때, Reduced TPG는 아래 식과 같이 정의되고, $\mathcal{G}\_\mathcal{S}$의 partial cost는 Reduced TPG의 수행 시간이라고 정의한다.
+
+$$
+red(\mathcal{G}_\mathcal{S}) = (\mathcal{V}, \mathcal{E}_1,\mathcal{N}_{\mathcal{E}2})
+$$
+
+이때 $\mathcal{G}\_\mathcal{S}$ partial cost는 $\mathcal{G}\_\mathcal{S}$에서 파생될 수 있는 어떠한 $\mathcal{G}^\mathcal{S} - producible\ TPG$의 partial cost보다도 작거나 같다.
+
+<br>
+
+![SES pseudo code](/assets/img/SES_Algorithm.png)
+
+위의 그림은 SES알고리즘의 수도코드를 나타낸 것이다. 간단하게 SES알고리즘의 동작 방식을 설명하면 다음과 같다.
+
+1. Root STPG 생성
+    - Construction 1을 사용하여 초기 STPG $\mathcal{G}^\mathcal{S}_{root}$를 생성. 이 초기 그래프는 사이클이 존재하지 않아야 하며, A* 탐색의 루트 노드가 된다.
+
+2. 우선순위 큐 $\mathcal{Q}$를 통해 탐색할 노드 선정
+    - $\mathcal{Q}$를 사용하여 STPG 노드를 $f$-value($g+h$)에 따라 정렬 및 선택
+    - $h$-value는 $red(\mathcal{G}_\mathcal{S})$의 partial cost
+
+3. 노드 확장
+    - 선택된 STPG에서 하나의 switchable edge를 선택하여 fix(고정) 또는 reverse(반전) 수행하여 2가지 노드를 생성
+    - 확장한 STPG에서 Cycle이 검출되면 해당 노드를 폐기한다.
+
+사실 경로 정해놓고 누가먼저 갈지 정하는 과정을 Best-fit Search알고리즘으로 구하는 로직이라 그렇게 어렵지는 않다. 하지만 여기서 중요한 점은 pseudo code의 5번 라인인 것 같다. 분기할 노드가 정해졌을 때, 해당 $\mathcal{G}\_\mathcal{S}$의 switchable edge들 중 어떤 edge를 선택하여 $fix$, $reverse$연산을 수행하여 분기할 것인지에 대한 결정을 하는 부분이다. 이 과정에서는 $branch$라는 함수가 분기할 STPG $\mathcal{G}\_\mathcal{S}$와 보조정보 $\mathcal{X}$를 통해 정하게 된다. 또한 $Hueristic$을 결정하는 부분도 $h$-value만 정의되어있고, $g$-value는 정의되어있지 않은데, 이를 어떻게 구현하냐에 따라 달라질 수 있다.
+
+<br>
+
+## **Execution-based Switchable Edge Search(ESES)**
+
+ESES는 실행 정보에 기반하여 구현된 SES알고리즘이다. 해당 알고리즘은 $BRANCH$, $HUERISTIC$ 함수를 실제 agent들의 경로 실행 정보에 기반하여 계산하게 된다. 아래는 ESES의 pseudo code이다.
+
+![ESES algorithm](/assets/img/ESES_algorithm.png)
+
+ESES는 앞서 설명한 것 처럼 실제 agent들의 경로 실행 정보에 기반하여 $\mathcal{X}$를 생성한다. 즉 TPG의 수행에 따라 $\mathcal{X}$에 가장 최근에 도착한 인덱스 정보(=$\mathcal{X}[i]$)가 저장되고, 이를 통해 $BRANCH$함수에서는 각 에이전트가 이동할 정점이  switchable edge에 연결되어있는지 확인한다. 만약 있다면 노드를 확장하고 $\mathcal{X}$를 업데이트 한다. 없다면 Agent의 작업수행을 대기한다.
+
+또한 이 과정을 통해 $HUERISTIC$함수 또한 업데이트한다. ESES에서 $g$-value는 모든 에이전트가 현재 상태 $\mathcal{X}$에 도달하기까지 이동한 총 비용으로 정의가 되기 때문에 Agent의 작업 수행에 따라 함께 업데이트 된다. 아래의 그림은 ESES가 수행되는 과정을 간단히 설명한 도식도이다.
+
+![ESES_EXEC](/assets/img/eses_execution.png)
+
+우선 ①단계에서 수행중인 STPG의 j번째 agent의 다음 노드에 switchable edge(주황 실선)이 연결되어있기 때문에 $BRANCH$로직을 통해 $(v^i_3, v^j_1)$이 선택된다. 그리고 해당 edge를 $fix$, $reverse$연산을 수행하여 ②, ③번 노드를 확장한다. 그 이후 ②, ③중 $f$-value가 ③이 높기 때문에 선택된다.
+
+③번 STPG를 수행하는중 agent가 각각 $v^i_1, v^j_1$에 도달한 뒤, 다시 i번째 agent의 다음노드에 switchable edge가 연결되어있고, $BRANCH$로직을 통해 $(v^i_3, v^j_2)$이 선택된다. 이를 통해 ④, ⑤노드를 확장하는데, 이때 ⑤는 cycle을 이루기 때문에 무시되어 ④번노드가 선택된다. 이때 STPG ②는 부분 비용(partial cost)이 이미 TPG ④의 비용보다 크므로 확장하지 않게 된다.
+
+<br>
+
+## **Graph-based Switchable Edge Search(GSES)**
+
+GSES에서는 각 정점에 대한 최대 경로 $lp(v)$ 값을 기반으로, switchable edge를 고를 때 현재 경로의 길이가 역전된 Edge를 선택하는 알고리즘이다. 좀 말이 복잡한데 간단히 설명하면, 각 agent가 랜덤하게 지연되면, 특정 노드에 대한 도착 예정시간과 도착 선후관계의 불일치가 발생할 수 있는데, 이 경우에만 분기를 하겠다는 것이다. pseudo-code는 아래와 갖다.
+
+![ESES_EXEC](/assets/img/GSES_algorithm.png)
+
+우선 GSES에서는 Huristic 값에서 $g$-value를 사용하지 않는다. 대신 $\mathcal{X}$만을 이용해서 partial cost를 별도로 계산한다. 우선 $HUERISTIC$함수는 아래와 같은 로직을 갖는다.
+
+1. $\mathcal{X}'[i] = lp(v^i_k), k \in [0, zi]$ on $red(\mathcal{G}\_\mathcal{S})$
+2. $f-value = \sum\_{i \in \mathcal{A}} \mathcal{X}[v^i\_{zi}]$
+
+간단하게 설명하면 1번 로직은 현재 선택된 STPG의 reduced-TPG에서 각각의 Agent가 경로상에서 도착하는데 걸리는 시간을 업데이트 하는것이다. 이 과정에서 각 agent가 delay된 정도가 업데이트되어, 현재 지연정보가 반영된 각 Agent별 정점 도착 예측시간을 알 수 있다. 2번로직은 해당 노드의 $f$-value를 계산하는 과정이다. GSES에서는 이때까지 걸린 시간이 아닌, 지연된 정보가 반영된 상태에서 각각의 agent가 목적지에 도착하는데 걸리는 시간의 합인 SoC함수를 목적함수로 사용한다.
+
+GSES에서 $BRANCH$함수는 각 Agent가 특정 노드에 도착하는 시간인 $\mathcal{X}$를 기반으로 switchable-edge가 있을때 불필요하게 먼저도착해서 기다리게 하는 Edge를 찾는다. 이러한 조건을 만족하는 switchable-edge를 수식으로 표현하면 아래 식과 같다.
+
+$$
+(u, v) \in \mathcal{S}_{\mathcal{E}2} : \mathcal{X}[u] \geq \mathcal{X}[v]
+$$
+
+이렇게 GSES에서는 휴리스틱적으로 도착 예정 시간만을 업데이트하여 빠르게 휴리스틱적으로 SES알고리즘을 해결할 수 있다고 한다.
+
 
 <br>
 
 # **후기**
 ---
-후기
+이번 논문은 계산 방법도 CBS보다 훨씬 간단하고, 기존의 Conflict based Search처럼 완벽하게 전체경로를 작성하지 않고 PIBT나 RHCR같이 현재 상황을 반영하여 주어진 경로를 일부만 수정하는 형식이라, 실제 내가 진행하고있는 Brown-Feild에서의 멀티로봇 관제 개발에서도 사용하기 좋을 것 같다. 이번 포스트에서는 간단히 넘어간 Graph-based SES(GSES)에서 PIBT의 우선순위 상속개념을 살짝 빌려와서 계산하면 더 빠르고 간결하게 문제를 해결할 수 있을것 같은데, 이건 이번 회사에서 한번 개발해보려고 한다.
