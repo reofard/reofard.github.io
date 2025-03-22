@@ -49,7 +49,7 @@ RHCR의 Windowed MAPF Solver는 [Online Multi-Agent Pathfinding](https://ojs.aaa
 
 ## **$A^*$ for a Goal Location Sequence**
 
-RHCR에서 사용하는 Windowed MAPF Solver는 기존의 CBS의 Low-level Searcher와 다르게 **여러 개의 목표 위치(Goal Location Sequence)를 순서대로 방문하는 경로**를 찾아야 한다. 그렇기 때문에 해당 논문에서는 [Multi-Label $A^*$](https://ojs.aaai.org/index.php/ICAPS/article/view/3474)를 사용한다. Multi-Label $A^*$의 pseudo code는 아래 그림과 같다.
+RHCR에서 사용하는 Windowed MAPF Solver는 기존의 CBS의 Low-level Searcher와 다르게 **여러 개의 목표 위치(Goal Location Sequence)를 순서대로 방문하는 경로**를 찾아야 한다. 그렇기 때문에 해당 논문에서는 [Multi-Label A*](https://ojs.aaai.org/index.php/ICAPS/article/view/3474)를 사용한다. Multi-Label $A^*$의 pseudo code는 아래 그림과 같다.
 
 ![multi_label_a*](/assets/img/multi_label_a*.png)
 
