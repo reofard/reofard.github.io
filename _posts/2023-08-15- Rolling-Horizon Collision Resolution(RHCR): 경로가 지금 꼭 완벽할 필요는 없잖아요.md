@@ -49,11 +49,11 @@ RHCR의 Windowed MAPF Solver는 [Online Multi-Agent Pathfinding](https://ojs.aaa
 
 ## **$A^*$ for a Goal Location Sequence**
 
-RHCR에서 사용하는 Windowed MAPF Solver는 기존의 CBS의 Low-level Searcher와 다르게 **여러 개의 목표 위치(Goal Location Sequence)를 순서대로 방문하는 경로**를 찾아야 한다. 그렇기 때문에 해당 논문에서는 [Multi-Label A*](https://ojs.aaai.org/index.php/ICAPS/article/view/3474)를 사용한다. Multi-Label $A^*$의 pseudo code는 아래 그림과 같다.
+RHCR에서 사용하는 Windowed MAPF Solver는 기존의 CBS의 Low-level Searcher와 다르게 **여러 개의 목표 위치(Goal Location Sequence)를 순서대로 방문하는 경로**를 찾아야 한다. 그렇기 때문에 해당 논문에서는 [Multi-Label A\*](https://ojs.aaai.org/index.php/ICAPS/article/view/3474)를 사용한다. Multi-Label $A^*$의 pseudo code는 아래 그림과 같다.
 
-![multi_label_a*](/assets/img/multi_label_a*.png)
+![multi_label_a\*](/assets/img/multi_label_a*.png)
 
-Multi-Label $A^*$에서는 기존의 $A^*$와 달리 확장되는 노드 $N$에 추가적인 요소인 $N.label$이 붙는다. $N.label$은 루트 노드에서 현재 노드까지의 경로중에 이미 방문한 목표 위치의 개수를 의미한다. 또한 휴리스틱 함수또한 다른데, $h-value = dist(N, g[N.label]) + \sum^{\mid g \mid - 1}_{j = N.label} dist(g[j], g[j+1])$로 나타낼수 있다. 이 값은  **다음 목표 위치까지의 거리 + 미래 목표 위치들 간의 거리 총합**을 나타낸다.
+Multi-Label $A^\*$에서는 기존의 $A^\*$와 달리 확장되는 노드 $N$에 추가적인 요소인 $N.label$이 붙는다. $N.label$은 루트 노드에서 현재 노드까지의 경로중에 이미 방문한 목표 위치의 개수를 의미한다. 또한 휴리스틱 함수또한 다른데, $h-value = dist(N, g[N.label]) + \sum^{\mid g \mid - 1}_{j = N.label} dist(g[j], g[j+1])$로 나타낼수 있다. 이 값은  **다음 목표 위치까지의 거리 + 미래 목표 위치들 간의 거리 총합**을 나타낸다.
 
 ## **Bounded-Horizon MAPF Solvers**
 
@@ -102,13 +102,14 @@ timestep 0에서 Windowed MAPF 솔버는 아래와 같이 $w$ timestep동안 충
 
 하지만 이러한 경로들은 flowtime이 높아 선택되지 않고, 이후 timestep 2에서 두 Agent가 여전히 셀 B와 C에서 대기하는 상태로 돌아오게 된다. 결과적으로 두 Agent는 셀 B와 C에서 영원히 대기하게 되어, 목표 위치에 도달하지 못하는 교착 상태(deadlock)가 발생한다.
 
-이러한 상황을 방지하기 위해 RHCR에서는 potential function을 제안한다. 이를 통해 RHCR은 현재 모든 Agent의 진행상황을 평가하고, Agent가 충분한 진행을 이루지 못하는 경우 $w$를 증가시키는 방법으로 데드락을 회피한다. Potential function $P$는 Windowed MAPF Solver로부터 모든 Agent의 경로를 받아 다음과 같은 식을 통해 진행상황을 평가한다. 
+이러한 상황을 방지하기 위해 RHCR에서는 potential function을 제안한다. 이를 통해 RHCR은 현재 모든 Agent의 진행상황을 평가하고, Agent가 충분한 진행을 이루지 못하는 경우 $w$를 증가시키는 방법으로 데드락을 회피한다. Potential function $P$는 Windowed MAPF Solver로부터 모든 Agent의 경로를 받아 다음과 같은 식을 통해 진행상황을 평가한다. 식이 너무 길어져서 아래 두 식에서는 $COMPUTEHVALUE$를 $Compute$로 나타내겠다.
 
 $$
-\begin{aligned}
-P(w) = \mid \{ a_i | COMPUTEHVALUE(x_i, l_i) \le COMPUTEHVALUE(s_i, 0), 1 \le i \le m \} \mid \\
-COMPUTEHVALUE(Location\ x, Lavel\ l) = dist(x, g_i[l]) + \sum^{\mid g_i \mid - 1}_{j=l+1} dist(g_i[j-1], g_i[j])
-\end{aligned}
+P(w) = \mid \{ a_i | Compute(x_i, l_i) \le Compute(s_i, 0), 1 \le i \le m \} \mid
+$$
+
+$$
+Compute(Location\ x, Lavel\ l) = dist(x, g_i[l]) + \sum^{\mid g_i \mid - 1}_{j=l+1} dist(g_i[j-1], g_i[j])
 $$
 
 위 식에서 $x_i$는 i번째 Agent의 timestep $w$에서의 위치이고, $l_i$는 timestep $w$까지 Agent가 지난 목표 위치의 개수이다. 이때 $COMPUTEHVALUE$ 함수는 Agent가 현재 위치에서 마지막 목표위치까지 도착할때 걸리는 최단경로를 나타내게 된다. 이때 $P(w)$은 모든 Agent중 **현재 위치에서 목표위치를 모두 순회하는 최소거리**보다 $w$**시간의 위치에서** $w$**남은 모든 목표 위치를 순회하는 최소 거리**가 긴 Agent의 개수를 나타내게 되는것이다.
