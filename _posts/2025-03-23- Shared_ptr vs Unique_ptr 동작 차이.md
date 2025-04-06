@@ -1,6 +1,6 @@
 ---
 title:  "shared_ptr vs unique_ptr 동작 차이"
-excerpt: "Computer Network"
+excerpt: "Programming"
 
 categories:
   - Programming
