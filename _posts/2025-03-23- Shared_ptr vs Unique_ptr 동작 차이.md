@@ -153,7 +153,35 @@ shred_child를 reset할때, shared_ptr이 자기 맘대로 실제 포인터의 �
 
 # **그럼 어떻게 shared_ptr은 소멸자를 호출할까?**
 
-내용
+사실 이 문제의 답은 이미 [공식 레퍼런스](https://en.cppreference.com/w/cpp/memory/unique_ptr)에 있었다. 간단하게 설명하면, 먼저 **두 스마트 포인트가 동작하는 방식이 다른 결정적인 이유는 control block의 유무라고 보인다.** 먼저 공식 레퍼런스를 읽어보자.
+
+> If T is a derived class of some base B, then unique_ptr\<T\> is implicitly convertible to unique_ptr\<B\>. The default deleter of the resulting unique_ptr\<B\> will use operator delete for B, leading to undefined behavior unless the destructor of B is virtual. Note that std::shared_ptr behaves differently: std::shared_ptr\<B\> will use the operator delete for the type T and the owned object will be deleted correctly even if the destructor of B is not virtual.
+
+
+말 그대로 "unique_ptr\<T\>의 기본 Deleter는 T type에 대해서 소멸자를 호출하고, 이때, **T의 기저클래스의 소멸자가 virtual이 아니라면 기저클래스의 소멸자를 호출하지 않는다"**라는 내용이다. 뭐 맞는말이다. 하지만 여기서 봐야하는 부분은 ```std::shared_ptr behaves ...```이후 부분이다. shared_ptr은 virtual 소멸자가 아니더라도 정상적으로 소멸자를 모두 호출한다고 하는데, 이는 shared_ptr의 공식 레퍼런스를 보면서 알아보자.
+
+unique_ptr의 공식 레퍼런스에서는 shared_ptr이 shared_ptr\<T\>가 shared_ptr\<B\>로 변환될 때도 T의 deleter를 사용하여 객체를 제대로 삭제한다고 한다. 어떻게 이게 가능할까? 먼저 아래 공식 문서의 일부를 읽어보자.
+
+> In a typical implementation, shared_ptr holds only two pointers:
+> - the stored pointer (one returned by get());
+> - a pointer to control block. 
+>
+> The control block is a dynamically-allocated object that holds:
+> - either a pointer to the managed object or the managed object itself;
+> - the deleter (type-erased);
+> - the allocator (type-erased);
+> - the number of shared_ptrs that own the managed object;
+> - the number of weak_ptrs that refer to the managed object. 
+
+unique_ptr과 shared_ptr의 가장 큰 차이는 control block의 유무이다. 공식 레퍼런스에 따르면, control block에서는 deleter를 같이 저장한다고 한다. 이때 ```type erased```가 중요한데, 이는 shared_ptr이 여러 기반 클래스의 타입으로 복사되더라도, type에 영향을 받지 않고, control block에서 실제 삭제할때 사용할 deleter가 이미 shared_ptr의 생성 단계에서 결정이 될 수 있다는 뜻이다.
+
+실제로 아래 사진과 같이 unique_ptr이 종료될때 아래 사진과 같이 그냥 저장해둔 포인터를 직접 delete하는것을 볼 수 있다.
+
+![unique_ptr 소멸자 호출](/assets/img/delete_unique_container.png)
+
+하지만 shared_ptr은 단순히 delete 연산만 수행하고 끝나는것이 아닌 추가적으로 저장된 deleter를 이용하여 작업을 수행하는것?을 볼 수 있다.(사실 대충 찍어서 이 부분이 아닐 수 도 있다.)
+
+![shared_ptr 소멸자 호출](/assets/img/delete_shared_container.png)
 
 <br>
 
