@@ -58,7 +58,7 @@ unique_ptr은 동적할당된 특정 메모리 공간에 대해 유일한 소유
   std::unique_ptr<A> pa(new A());
 
   // pb 도 객체를 가리키게 할 수 있을까?
-  std::unique_ptr<A> pb = pa;럼
+  std::unique_ptr<A> pb = pa;
 ```
 
 이러한 특징은 위 예제와 같은 코드를 실행시켰을때 ```'std::unique_ptr<A,std::default_delete<_Ty>>::unique_ptr(const std::unique_ptr<_Ty,std::default_delete<_Ty>> &)': attempting to reference a deleted function```와 같은 에러를 발생시키면서 애초에 컴파일 자체가 되지 않는다. 이는 unique_ptr은 이동생성자만 존재하고, 복사생성자는 명시적으로 삭제되었기 때문인데, 그렇기 때문에 ```std::move``` 등의 소유권 이전은 가능하지만, 앞선 예제에서 처럼 단순한 대입 연산을 통한 복사 생성자 호출은 에러로 처리가 되는것이다.
