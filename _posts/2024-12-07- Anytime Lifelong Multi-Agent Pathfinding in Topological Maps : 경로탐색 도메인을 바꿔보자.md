@@ -55,7 +55,7 @@ $$
 
 # **Anytime-RHCR**
 ---
-해당 논문에서는 Lifelong MAPF(Multi-Agent Path Finding) 문제를 해결하기 위해 RHCR(Rolling Horizon Collision Resolution) 방식을 한다. 하지만 협소로가 많은 Graph에서는 RHCR을 적용 하기에는 적합하지 않다. 시간 구간 $\omega$가 작을 경우 긴 복도에서 **교착 상태(deadlock)**가 발생할 가능성이 높아지기 때문이다. $\omega$를 늘리면 이러한 문제를 완화할 수 있지만, 계산량이 크게 증가하여 실시간 처리에 문제가 생기게 된다.
+해당 논문에서는 Lifelong MAPF(Multi-Agent Path Finding) 문제를 해결하기 위해 [RHCR(Rolling Horizon Collision Resolution) 방식](https://reofard.github.io/path_finding/2023/08/15/Rolling-Horizon-Collision-Resolution(RHCR)-%EA%B2%BD%EB%A1%9C%EA%B0%80-%EC%A7%80%EA%B8%88-%EA%BC%AD-%EC%99%84%EB%B2%BD%ED%95%A0-%ED%95%84%EC%9A%94%EB%8A%94-%EC%97%86%EC%9E%96%EC%95%84%EC%9A%94.html)을 한다. 하지만 협소로가 많은 Graph에서는 RHCR을 적용 하기에는 적합하지 않다. 시간 구간 $\omega$가 작을 경우 긴 복도에서 **교착 상태(deadlock)**가 발생할 가능성이 높아지기 때문이다. $\omega$를 늘리면 이러한 문제를 완화할 수 있지만, 계산량이 크게 증가하여 실시간 처리에 문제가 생기게 된다.
 
 이러한 문제를 해결하기 위해 해당 논문에서는 Anytime-RHCR를 제안한다. 이 알고리즘은 초기 계획 단계에서는 ECBS를 사용하여 짧은 시간 구간 $\omega\_{init}$에서 초기 경로를 생성한다. 이후 특정 에이전트 그룹을 선택하여, 최적 해법인 Corridor-CBS를 통해 확장된 시간 구간 $\omega\_{extd}$에서 경로를 다시 개선한다.
 
