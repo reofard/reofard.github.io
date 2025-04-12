@@ -13,8 +13,8 @@ toc_sticky: true
 layout: post
 use_math: true
  
-date: 2023-08-15
-last_modified_at: 2023-08-15
+date: 2023-09-24
+last_modified_at: 2023-09-24
 ---
 
 # **Lifelong Multi-Agent Path Finding in Large-Scale Warehouses: 실제 물류창고에서 MAPF돌리는법**
