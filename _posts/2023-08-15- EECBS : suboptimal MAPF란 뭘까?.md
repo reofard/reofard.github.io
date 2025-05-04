@@ -7,7 +7,7 @@ categories:
 
 tags:
   - [MAPF, Path Finding, Multi-Robot]
-
+`
 toc: true
 toc_sticky: true
 layout: post
@@ -28,7 +28,7 @@ last_modified_at: 2023-08-15
 
 # **간단한 소개**
 ---
-우선 EECBS는 기존의 CBS의 속도 개선 버전이다. 우선 CBS는 앞서서 설명한 [포스트](https://reofard.github.io/path_finding/2023/05/20/CBS-MAPF계의-성경.html)가 있기 때문에 간단하게 CBS는 무엇이고 뭐를 개선했는지만 언급하고 넘어가려 한다. **CBS는 MAPF를 최적으로 푸는 대표적인 알고리즘**이다. 이 알고리즘은 다음과 같은 두 단계의 과정으로 이루어진다.
+EECBS는 기존의 CBS의 속도 개선 버전이다. 우선 CBS는 앞서서 설명한 [포스트](https://reofard.github.io/path_finding/2023/05/20/CBS-MAPF계의-성경.html)가 있기 때문에 간단하게 CBS는 무엇이고 뭐를 개선했는지만 언급하고 넘어가려 한다. **CBS는 MAPF를 최적으로 푸는 대표적인 알고리즘**이다. 이 알고리즘은 다음과 같은 두 단계의 과정으로 이루어진다.
 
 Low-level:  각 에이전트의 최적 경로 계산
 High-level: 경로 간 충돌 발견 → 충돌 해결을 위해 분기(branching)
@@ -48,9 +48,9 @@ EECBS는 앞서 설명한 CBS의 속도를 보완하기 위해서 나온 여러 
 
 우선 CBS의 핵심 요소인 Focal Search에 대해 알아보도록 하자. 이번 포스트에서는 focal search에 대해 간단하게 정리만하고, 다음에 제대로 정리하려고 한다. Focal Search는 특정 문제의 최적의 해가 $best-n$이고, 해의 비용이 $f(best-n)$일 때 $wf(best-n) \ge f(n)$를 만족하는 해 $n$을 구하는 알고리즘이다. Focal Search는 일반적인 $A^{\*}$ 알고리즘과 다르게 상태공간을 탐색할때 사용하는 우선순위 큐가 아래와 같이 2개이다.
 
-```OPEN```: $A^{\*}$의 일반적인 우선순위 큐 ($f = g + h$로 정렬)
+- ```OPEN```: $A^{\*}$의 일반적인 우선순위 큐 ($f = g + h$로 정렬)
 
-```FOCAL```: $wf(best-n) \ge f(n)$를 만족하는 노드들
+- ```FOCAL```: $wf(best-n) \ge f(n)$를 만족하는 노드들
 
 여기서 ```FOCAL```은 **"좋은 상태들 중에서 골라보자"**라는 후보 해 리스트이다. 즉 어느정도 최적 해를 기준으로 $w$배수 내에 있는 상태들을 먼저 정렬하고, 그중 다시 확장할 상태를 정하는 알고리즘인 것이다.
 
@@ -58,9 +58,9 @@ EECBS는 앞서 설명한 CBS의 속도를 보완하기 위해서 나온 여러 
 
 먼저 ECBS의 Low-Level Search에 대해서 알아보자. **Low-Level Search는 제약 조건(CT 노드 N의 constraints)을 만족하는 경로를 탐색**한다. 이때 ECBS는 CBS와 달리 Focal Search를 통해 다른 Agent의 경로와 충돌이 가장 적은 경로를 탐색한다. 이때 Focal Search에서 ```OPEN```과 ```FOCAL``` 각 우선순위 큐의 정렬 조건은 아래와 같은 식을 따른다.
 
-```OPEN```: $f(n) = g(n) + h(n)$
+- ```OPEN```: $f(n) = g(n) + h(n)$
 
-```FOCAL```: $d(n) = $ 다른 에이전트들과의 충돌 횟수
+- ```FOCAL```: $d(n) = $ 다른 에이전트들과의 충돌 횟수
 
 즉 ECBS의 Low-Level Search에서는 비용이 $wf(best-n)$ 이하인 솔루션 중 다른 로봇과 충돌이 가장 적은 경로를 반환하게 되는것이다. 이 과정에서 **단순히 빠른 길을 찾는 게 아니라, High-Level Search에서 처리할 충돌 수를 줄이기 위해 경로가 선택**되는것이다.
 
@@ -68,14 +68,9 @@ EECBS는 앞서 설명한 CBS의 속도를 보완하기 위해서 나온 여러 
 
 우선 CBS에서 **High-Level Search는 선택된 노드에서 발견된 충돌을 해결하는 자식 상태 분기** 및 탐색하는 알고리즘이다. 이때 ECBS는 High-Level Search에서도 Focal Search 알고리즘을 확용하여 빠르게 솔루션을 계산한다. Low-Level Search와 같이 High-Level Search에서도 아래와 같이 High-Level 상태 $N$에 대해 ```OPEN```과 ```FOCAL``` 각 우선순위 큐의 정렬 조건을 아래와 같은 식을 통해 나타낼 수 있다.
 
-<br>
-
 - ```OPEN```: $cost(N) \le w × lb(bestlb),\ lb(N)=\sum^m_{i=1} f^i_{min}(N)$
 
-- ```FOCAL```: $hc(N) =$ 총 충돌 횟수
-
-<br>
-
+- ```FOCAL```: $h_c(N) =$ 총 충돌 횟수
 
 그 결과 ECBS의 High-Level Search에서는 충돌 횟수가 적은 상태부터 분기하게 되어 기존의 CBS보다 더 빠르게 충돌을 없애가면서 정확한 최적해는 아니지만, 항상 $w ×$ 최적해 비용 이하의 솔루션을 구할수 있게 된다고 한다.
 
@@ -118,12 +113,24 @@ $lb(bestlb)$가 커질수록 $w × lb(bestlb)$도 함께 커져, FOCAL의 범위
 
 <br>
 
-# **Explicit Estimation Search**
+# **Explicit Estimation Conflict Based Search**
+---
+이번 논문에서 저자는 기존의 ECBS의 한계점과 여러 문제상황에 대해 해결하여 suboptimality를 만족하면서 빠른속도로 탐색 할 수 있는 알고리즘인 EECBS(Explicit Estimation Conflict Based Search)를 제안한다. 어떤 개선사항이 있었는지 한번 정리해 보려고 한다.
 
-이번 논문에서 저자는 앞서 설명한 문제를 해결하기위해 CBS에 Explicit Estimation Search를 도입하였다. Explicit Estimation Search란 무엇인지 간단하게 알아보자.
+## **Explicit Estimation  Search**
+앞서 설명한 탐색 효율성 문제를 해결하기 위해 해당 논문에서는 CBS에 EES(Explicit Estimation Search)를 도입하였다. EES는 위에서 언급한 Focal Search의 한계점을 극복하기 위해 디자인된 알고리즘으로, 기존의 ECBS를 해결하기 위해 해당 논문의 저자가 도입한 알고리즘이다. 무엇인지 간단하게 알아보자.
 
+우선 EES에서는 **"지금 이 노드에서 출발해서 `bestlb`까지 가는 데 드는 총비용"을 대충 추정"하는 함수** $\hat{f}$를 도입하여 사용한다. EES는 기존에 Focal Search에서 확장할 노드를 관리하기 위해 `OPEN`, `FOCAL` 두가지의 리스트를 사용했던것과 달리 아래와 같이 3개의 리스트를 통해 확장 할 노드를 관리한다.
 
+- ```CLEANUP```: 평범한 $A^*$ open 리스트. f = g + h로 정렬.
+- ```OPEN```: inadmissible한 cost function $\hat{f}$의 값으로 정렬한 리스트. 또 다른 종류의 평범한 $A^*$ open 리스트이다.
+- ```FOCAL```: OPEN에서 $\hat{f}$값이 $w × lb(bestlb)$ 이하인 것만 모은 리스트. 내부적으로 `distance-to-go`함수인 $d$에 의해 정렬된다.
 
+사실 $\hat{f}$는 기존의 FOCAL Search에서 사용한 함수와 동일하게 하한선 내에서 더 공격적으로 탐색을 할 수 있도록 inadmissible한 정렬 조건을 나타내는 함수이다. 하지만 EES는 여기서 `distance-to-go` 함수를 사용하여 focal search의 한계를 돌파하고자 했다. `distance-to-go` 함수는 **"목표까지의 거리 또는 남은 단계 수의 추정"**하는 함수로, 최적일 것 같은 상태를 추정하는 함수가 아니라, **더 적은 탐색 단계로도 일단 해답은 구할 수 있는 상태**를 찾고자 하는 함수이다. 즉, 현재 상태가 얼마나 효율적인지가 아닌, 현재 상태에서 얼마나 목표 위치와 가까운지에 대한 기준인 것이다.
+
+그렇다면 이러한 리스트들을 가지고 어떻게 
+
+관심 있는 노드가 현재의 서브옵티멀 경계 내에 있지 않으면, 최소 f 값으로 노드를 확장하여 현재 서브옵티멀 경계를 개선합니다.
 <br>
 
 # **후기**
