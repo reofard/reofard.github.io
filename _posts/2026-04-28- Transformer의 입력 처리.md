@@ -1,6 +1,6 @@
 ---
 title:  "Transformer의 입력 처리"
-excerpt: "A.I 공부
+excerpt: "Paper Summary"
 
 categories:
   - A.I
