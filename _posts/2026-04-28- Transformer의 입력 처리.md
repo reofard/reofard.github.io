@@ -17,6 +17,7 @@ date: 2026-04-28
 last_modified_at: 2026-04-28
 ---
 
+---
 # **비둘기 유도 미사일**
 
 최근에 Claude, Cursor 같은 Large Langugue Model을 활용한 엔지니어링이 엄청나게 빠른 속도로 발전하고 있다. 이직한 회사에서도 Claude Code를 최고사양으로 구독할수 있게 해줘서 나름 하네스 엔지니어링도 이것저것 시도해보고, 잘 사용해보고 있다. 근데 이걸 사용하면서 느낀점은 **"기존에 LLM모델이 로컬환경의 API(Bash, Curl등)를 부르는 방법을 추가하고, 부를수 있도록 LLM을 학습시켜놓은것이지, 근본적으로 인공지능 기술이 발전한것은 아니지 않나?"** 라는 생각이 들었다.
@@ -31,26 +32,27 @@ last_modified_at: 2026-04-28
 
 <br>
 
-## **Transformer 구조**
+---
+# **Transformer 구조**
 
 ㅇㅇ
 
----
 
-### **Tokenization**
+## **Tokenization**
 
 dd
 
-### **Embedding**
+## **Embedding**
 
 내용
 
-### **Positional Encoding**
+## **Positional Encoding**
 
 내용
 
+---
 <br>
 
-## **후기**
+# **후기**
 
 내용
