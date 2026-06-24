@@ -1,5 +1,5 @@
 ---
-title:  "Transformer의 입력 처리"
+title:  "Transformer: 입력처리"
 excerpt: "Paper Summary"
 
 categories:
