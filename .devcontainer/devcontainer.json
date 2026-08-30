@@ -1,0 +1,15 @@
+{
+    "name": "Jekyll",
+    "image": "ruby:3.1-bookworm",
+    "runArgs": [
+        "--security-opt", "label=disable",
+        "--userns=host",
+        "--hostname=jekyll-dev-container"
+    ],
+    "mounts": [
+        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,readonly"
+    ],
+    "remoteUser": "root",
+    "postCreateCommand": "gem install bundler:2.4.22 && bundle install",
+    "postStartCommand": "nohup bundle exec jekyll serve --host 0.0.0.0 > /tmp/jekyll.log 2>&1 &"
+}

@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start-jekyll",
+      "type": "shell",
+      "command": "bundle exec jekyll serve --host 0.0.0.0 --livereload",
+      "isBackground": true, // 👈 백그라운드에서 상시 실행되도록 설정
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always", // 실행 로그를 볼 수 있도록 터미널을 열어둠
+        "panel": "new"
+      }
+    }
+  ]
+}
