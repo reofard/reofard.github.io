@@ -1,15 +1,18 @@
 {
     "name": "Jekyll",
-    "image": "ruby:3.1-bookworm",
-    "runArgs": [
-        "--security-opt", "label=disable",
-        "--userns=host",
-        "--hostname=jekyll-dev-container"
+
+    "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+    "forwardPorts": [
+        4000
     ],
-    "mounts": [
-        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,readonly"
-    ],
-    "remoteUser": "root",
+
+    "features": {
+        "ghcr.io/devcontainers/features/ruby:2": {
+            "version": "3.1"
+        }
+    },
+
     "postCreateCommand": "gem install bundler:2.4.22 && bundle install",
-    "postStartCommand": "nohup bundle exec jekyll serve --host 0.0.0.0 > /tmp/jekyll.log 2>&1 &"
+    "postStartCommand": "bundle exec jekyll serve --host 0.0.0.0"
 }
